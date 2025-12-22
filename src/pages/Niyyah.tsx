@@ -50,20 +50,20 @@ export default function Niyyah() {
   };
 
   return (
-    <motion.div 
-      className="min-h-screen bg-background flex flex-col p-6 max-w-md mx-auto animate-fade-in"
+    <motion.div
+      className="min-h-screen bg-background flex flex-col p-6 pb-40 max-w-md mx-auto animate-fade-in"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Header */}
-      <motion.div 
+      <motion.div
         className="flex items-center mb-8 pt-4"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        <button 
+        <button
           onClick={() => setLocation("/")}
           className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-white/50"
         >
@@ -71,7 +71,7 @@ export default function Niyyah() {
         </button>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -79,13 +79,13 @@ export default function Niyyah() {
       >
         <h1 className="text-3xl font-serif text-foreground mb-3">Set Your Niyyah</h1>
         <p className="text-muted-foreground text-lg font-light leading-relaxed">
-          "Actions are dependent upon their intentions." <br/>
+          "Actions are dependent upon their intentions." <br />
           <span className="text-sm opacity-60">— Sahih al-Bukhari</span>
         </p>
       </motion.div>
 
       {/* Options */}
-      <motion.div 
+      <motion.div
         className="grid gap-4 flex-1"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -100,8 +100,8 @@ export default function Niyyah() {
               className={cn(
                 "group relative flex items-center p-5 rounded-2xl border-2 text-left transition-all duration-300",
                 isSelected
-                  ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
-                  : "border-transparent bg-white hover:bg-white/60 hover:border-border shadow-sm hover:shadow-md"
+                  ? "border-primary bg-primary/5 shadow-lg shadow-primary/10 dark:bg-primary/10"
+                  : "border-transparent bg-white hover:bg-white/60 hover:border-border shadow-sm hover:shadow-md dark:bg-card dark:hover:bg-accent/50 dark:hover:border-border"
               )}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -113,7 +113,7 @@ export default function Niyyah() {
               role="radio"
               aria-checked={isSelected}
             >
-              <motion.div 
+              <motion.div
                 className={cn(
                   "p-3 rounded-xl mr-4 transition-colors",
                   item.color,
@@ -130,9 +130,9 @@ export default function Niyyah() {
                 </h3>
                 <p className="text-sm text-muted-foreground/80 mt-0.5">{item.description}</p>
               </div>
-              
+
               {isSelected && (
-                <motion.div 
+                <motion.div
                   className="absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
@@ -145,7 +145,7 @@ export default function Niyyah() {
       </motion.div>
 
       {/* Footer */}
-      <motion.div 
+      <motion.div
         className="mt-8 pt-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -155,7 +155,7 @@ export default function Niyyah() {
           whileHover={{ scale: selected ? 1.02 : 1 }}
           whileTap={{ scale: selected ? 0.98 : 1 }}
         >
-          <Button 
+          <Button
             onClick={handleStart}
             disabled={!selected}
             size="lg"

@@ -237,7 +237,7 @@ export default function Home() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 pb-24 max-w-md mx-auto w-full">
+      <main className="flex-1 flex flex-col items-center justify-center p-6 pb-40 max-w-md mx-auto w-full">
 
         {/* Fallback Location Indicator */}
         {isUsingFallback && (
