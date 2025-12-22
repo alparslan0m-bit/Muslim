@@ -10,28 +10,28 @@ const INTENTIONS = [
     title: "Seeking Knowledge",
     description: "To benefit myself and the Ummah",
     icon: BookOpen,
-    color: "bg-blue-50 text-blue-600 border-blue-100",
+    color: "bg-primary/10 text-primary border-primary/20",
   },
   {
     id: "provision",
     title: "Halal Provision",
     description: "Working to sustain my family",
     icon: Briefcase,
-    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
+    color: "bg-primary/10 text-primary border-primary/20",
   },
   {
     id: "ihsan",
     title: "Ihsan (Excellence)",
     description: "Perfecting my craft as worship",
     icon: Heart,
-    color: "bg-rose-50 text-rose-600 border-rose-100",
+    color: "bg-primary/10 text-primary border-primary/20",
   },
   {
     id: "reflection",
     title: "Silent Reflection",
     description: "Quiet contemplation and peace",
     icon: Moon,
-    color: "bg-slate-50 text-slate-600 border-slate-100",
+    color: "bg-primary/10 text-primary border-primary/20",
   },
 ];
 
