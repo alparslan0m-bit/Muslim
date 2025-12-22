@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Home, History, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Navigation() {
   const [location] = useLocation();
