@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Navigation } from "@/components/Navigation";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { NetworkStatus } from "@/components/NetworkStatus";
+import { PWASplashScreen } from "@/components/PWASplashScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AnimatePresence } from "framer-motion";
 import { Suspense, lazy } from "react";
@@ -48,6 +49,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <div className="min-h-screen bg-background">
+          <PWASplashScreen />
           <Toaster />
           <Router />
           <Navigation />

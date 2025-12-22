@@ -2,9 +2,11 @@ import { Link, useLocation } from "wouter";
 import { Home, History, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useHapticFeedback } from "@/hooks/use-pwa";
 
 export function Navigation() {
   const [location] = useLocation();
+  const haptic = useHapticFeedback();
 
   const navItems = [
     { href: "/", icon: Home, label: "Today" },
@@ -12,10 +14,12 @@ export function Navigation() {
     { href: "/history", icon: History, label: "History" },
   ];
 
-  // Haptic feedback helper
-  const triggerHaptic = () => {
-    if (navigator.vibrate) {
-      navigator.vibrate(10); // Subtle tick
+  // Premium haptic feedback patterns
+  const handleNavClick = (isAction: boolean) => {
+    if (isAction) {
+      haptic.selection(); // Different feedback for action button
+    } else {
+      haptic.tap();
     }
   };
 
@@ -34,7 +38,11 @@ export function Navigation() {
           const isActive = location === item.href;
 
           return (
-            <Link key={item.href} href={item.href} onClick={triggerHaptic}>
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => handleNavClick(item.isAction)}
+            >
               <div className="relative group cursor-pointer">
                 {/* Active Indicator Background */}
                 {isActive && (

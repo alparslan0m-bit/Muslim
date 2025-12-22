@@ -40,18 +40,20 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Muslim Focus',
+        name: 'Muslim Focus - Premium PWA',
         short_name: 'MuslimFocus',
-        description: 'A spiritual focus app for Muslims - track prayer times and maintain focus during work',
+        description: 'A spiritual focus app for Muslims - track accurate prayer times and maintain focus during work with offline support',
         theme_color: '#9DC183',
         background_color: '#F9F9F4',
         display: 'standalone',
         orientation: 'portrait-primary',
         scope: '/',
-        start_url: '/',
+        start_url: '/?utm_source=pwa',
         lang: 'en',
         dir: 'ltr',
         categories: ['productivity', 'lifestyle', 'religion'],
+        iarc_rating_id: '',
+        screenshots: getAvailableScreenshots(),
         icons: [
           {
             src: '/icons/icon-72x72.png',
@@ -108,28 +110,75 @@ export default defineConfig({
             purpose: 'maskable'
           }
         ],
-        screenshots: getAvailableScreenshots(),
         shortcuts: [
           {
             name: 'Start Focus Session',
             short_name: 'Focus',
-            description: 'Begin a new focus session',
-            url: '/niyyah',
-            icons: [{ src: '/icons/icon-96x96.png', sizes: '96x96' }]
+            description: 'Begin a new mindful focus session with prayer times',
+            url: '/niyyah?utm_source=shortcut',
+            icons: [
+              {
+                src: '/icons/icon-96x96.png',
+                sizes: '96x96',
+                type: 'image/png',
+                purpose: 'any'
+              },
+              {
+                src: '/icons/maskable-icon.png',
+                sizes: '96x96',
+                type: 'image/png',
+                purpose: 'maskable'
+              }
+            ]
           },
           {
-            name: 'View History',
+            name: 'View Prayer Times',
+            short_name: 'Prayers',
+            description: 'Check accurate prayer times for today',
+            url: '/?utm_source=shortcut',
+            icons: [
+              {
+                src: '/icons/icon-96x96.png',
+                sizes: '96x96',
+                type: 'image/png',
+                purpose: 'any'
+              }
+            ]
+          },
+          {
+            name: 'Session History',
             short_name: 'History',
-            description: 'Check your focus session history',
-            url: '/history',
-            icons: [{ src: '/icons/icon-96x96.png', sizes: '96x96' }]
+            description: 'Review your focus session history and stats',
+            url: '/history?utm_source=shortcut',
+            icons: [
+              {
+                src: '/icons/icon-96x96.png',
+                sizes: '96x96',
+                type: 'image/png',
+                purpose: 'any'
+              }
+            ]
           }
         ],
-        related_applications: [],
+        share_target: {
+          action: '/?action=share',
+          method: 'POST',
+          enctype: 'multipart/form-data',
+          params: {
+            title: 'title',
+            text: 'text',
+            url: 'url'
+          }
+        },
+        protocol_handlers: [
+          {
+            protocol: 'web+muslim',
+            url: '/?intent=%s'
+          }
+        ],
+        file_handlers: [],
         prefer_related_applications: false,
-        edge_side_panel: {
-          preferred_width: 400
-        }
+        related_applications: []
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
