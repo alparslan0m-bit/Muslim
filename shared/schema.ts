@@ -11,9 +11,14 @@ export const sessions = pgTable("sessions", {
   date: text("date").notNull(), // ISO date string YYYY-MM-DD
 });
 
-export const insertSessionSchema = createInsertSchema(sessions).omit({
-  id: true,
-});
+export const insertSessionSchema = createInsertSchema(sessions)
+  .omit({
+    id: true,
+  })
+  .extend({
+    startTime: z.union([z.date(), z.string().pipe(z.coerce.date())]),
+    endTime: z.union([z.date(), z.string().pipe(z.coerce.date())]).nullable().optional(),
+  });
 
 export type Session = typeof sessions.$inferSelect;
 export type InsertSession = z.infer<typeof insertSessionSchema>;
