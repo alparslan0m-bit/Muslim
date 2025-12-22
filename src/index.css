@@ -4,6 +4,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* iOS Performance & Rendering Fixes */
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+* {
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  transform: translateZ(0);
+}
+
+/* Optimize animations on mobile */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    will-change: auto !important;
+  }
+}
+
 :root {
   /* Earthy Palette */
   /* Cream/Beige Background: #F9F9F4 */
@@ -321,4 +344,43 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Framer Motion & Animation Optimization for iOS */
+[data-framer-component],
+.framer-motion {
+  will-change: transform, opacity;
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  transform: translateZ(0);
+}
+
+/* Reduce animations on reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-framer-component],
+  .framer-motion,
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* iOS Safari specific text rendering */
+input, textarea, select, button {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+/* Prevent iOS zoom on input focus */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea {
+  font-size: 16px;
+  -webkit-user-select: text;
 }

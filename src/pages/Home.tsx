@@ -280,8 +280,7 @@ export default function Home() {
           <div className="text-center z-10 px-4">
             <motion.div
               className="text-5xl md:text-7xl font-mono font-light tracking-tight text-primary break-words"
-              key={timeLeft} // Re-animate when time changes
-              initial={{ scale: 0.95, opacity: 0.8 }}
+              initial={{ scale: 1, opacity: 1 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
