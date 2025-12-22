@@ -7,47 +7,105 @@ export interface PrayerInfo {
   time: Date;
   nextPrayerName: string;
   nextPrayerTime: Date;
-  isPrayerTimeNow: boolean; // Simple check if we are within X minutes of a prayer
+  isPrayerTimeNow: boolean;
 }
 
-// Cache for prayer times to avoid recalculation
-const prayerCache = new Map<string, PrayerInfo>();
+// Cache for prayer times with timestamps to avoid recalculation
+interface CachedPrayerInfo extends PrayerInfo {
+  cachedAt: number; // Timestamp in milliseconds
+}
+
+const prayerCache = new Map<string, CachedPrayerInfo>();
+
+// Cache validity duration: 5 minutes
+// Prayer times need frequent recalculation to keep "current prayer" accurate
+const CACHE_DURATION_MS = 5 * 60 * 1000;
+
+// Default location (Mecca) - can be overridden
+const DEFAULT_COORDINATES = {
+  latitude: 21.4225,
+  longitude: 39.8262,
+  label: 'Mecca'
+};
+
+// Get user's saved location preference or default
+const getDefaultLocation = (): { coords: Coordinates; label: string } => {
+  try {
+    const saved = localStorage.getItem('prayer_location');
+    if (saved) {
+      const { latitude, longitude, label } = JSON.parse(saved);
+      return {
+        coords: new Coordinates(latitude, longitude),
+        label: label || 'Saved Location'
+      };
+    }
+  } catch (error) {
+    console.error('Failed to load saved location:', error);
+  }
+  return {
+    coords: new Coordinates(DEFAULT_COORDINATES.latitude, DEFAULT_COORDINATES.longitude),
+    label: DEFAULT_COORDINATES.label
+  };
+};
 
 export function usePrayerTimes() {
   const [coords, setCoords] = useState<Coordinates | null>(null);
   const [prayerInfo, setPrayerInfo] = useState<PrayerInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // Changed from true to false - don't block initial render
+  const [loading, setLoading] = useState(false);
+  const [isUsingFallback, setIsUsingFallback] = useState(false);
 
   // 1. Get Location with shorter timeout and non-blocking
   useEffect(() => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser");
+      const fallbackLocation = getDefaultLocation();
+      setCoords(fallbackLocation.coords);
+      setIsUsingFallback(true);
       return;
     }
 
     let timeoutId: NodeJS.Timeout;
     const handleSuccess = (position: GeolocationPosition) => {
       clearTimeout(timeoutId);
-      setCoords(new Coordinates(position.coords.latitude, position.coords.longitude));
-      setError(null); // Clear any previous errors
+      const newCoords = new Coordinates(position.coords.latitude, position.coords.longitude);
+      setCoords(newCoords);
+      setError(null);
+      setIsUsingFallback(false);
       setLoading(false);
+      
+      // Save user's location preference
+      try {
+        localStorage.setItem('prayer_location', JSON.stringify({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          label: 'My Location'
+        }));
+      } catch (e) {
+        console.error('Failed to save location:', e);
+      }
     };
 
     const handleError = (err: GeolocationPositionError) => {
       clearTimeout(timeoutId);
-      setError("Unable to retrieve your location. Please enable location access.");
+      // Use fallback location instead of showing error
+      const fallbackLocation = getDefaultLocation();
+      setCoords(fallbackLocation.coords);
+      setIsUsingFallback(true);
+      setError(null); // Don't show error - we have a fallback
       setLoading(false);
-      console.error(err);
+      console.error('Geolocation error:', err);
     };
 
-    // Set shorter 5 second timeout and start loading
+    // Start loading and request location
     setLoading(true);
     timeoutId = setTimeout(() => {
-      setError("Location request timed out. Using default location.");
+      // Timeout: use fallback location gracefully
+      const fallbackLocation = getDefaultLocation();
+      setCoords(fallbackLocation.coords);
+      setIsUsingFallback(true);
+      setError(null); // Don't show error - fallback is working
       setLoading(false);
-      // Set default coordinates (Mecca) as fallback
-      setCoords(new Coordinates(21.4225, 39.8262));
     }, 5000);
 
     navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
@@ -63,13 +121,18 @@ export function usePrayerTimes() {
   useEffect(() => {
     if (!coords) return;
 
-    const cacheKey = `${coords.latitude},${coords.longitude}`;
+    const today = new Date().toDateString();
+    const cacheKey = `${coords.latitude},${coords.longitude},${today}`;
     const cached = prayerCache.get(cacheKey);
     
-    // If we have cached data and it's less than 1 hour old, use it
-    if (cached && (Date.now() - cached.time.getTime()) < 3600000) {
-      setPrayerInfo(cached);
-      return;
+    // Check if cache is still valid (less than 5 minutes old)
+    // This keeps "current prayer" info fresh while avoiding excessive recalculation
+    if (cached) {
+      const cacheAge = Date.now() - cached.cachedAt;
+      if (cacheAge < CACHE_DURATION_MS) {
+        setPrayerInfo(cached);
+        return;
+      }
     }
 
     const calculate = () => {
@@ -104,12 +167,13 @@ export function usePrayerTimes() {
         }
       }
 
-      const newPrayerInfo = {
+      const newPrayerInfo: CachedPrayerInfo = {
         name: current === Prayer.None ? 'Isha' : prayerNameToString(current),
         time: now,
         nextPrayerName,
         nextPrayerTime: nextPrayerTime!,
-        isPrayerTimeNow
+        isPrayerTimeNow,
+        cachedAt: Date.now() // Store when this was calculated
       };
 
       // Cache the result
@@ -118,11 +182,12 @@ export function usePrayerTimes() {
     };
 
     calculate();
-    // Recalculate every minute
-    const interval = setInterval(calculate, 60000);
+    // Recalculate every 5 minutes to keep "current prayer" accurate
+    // even if coordinates don't change
+    const interval = setInterval(calculate, CACHE_DURATION_MS);
     return () => clearInterval(interval);
 
   }, [coords]);
 
-  return { prayerInfo, error, loading, coords };
+  return { prayerInfo, error, loading, coords, isUsingFallback };
 }

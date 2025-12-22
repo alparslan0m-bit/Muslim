@@ -7,12 +7,12 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
-  const { prayerInfo, loading, error } = usePrayerTimes();
+  const { prayerInfo, loading, error, isUsingFallback } = usePrayerTimes();
   const [, setLocation] = useLocation();
   const [timeLeft, setTimeLeft] = useState<string>("--:--:--");
 
-  // Format time remaining until next prayer
-  const formatTimeLeft = (nextPrayerTime: Date) => {
+  // Format time remaining until next prayer - memoized to prevent recreation
+  const formatTimeLeft = useCallback((nextPrayerTime: Date) => {
     const now = new Date();
     const diff = nextPrayerTime.getTime() - now.getTime();
     
@@ -23,7 +23,7 @@ export default function Home() {
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
     
     return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
+  }, []);
 
   useEffect(() => {
     if (!prayerInfo) {
@@ -43,7 +43,7 @@ export default function Home() {
     setTimeLeft(formatTimeLeft(prayerInfo.nextPrayerTime));
 
     return () => clearInterval(timer);
-  }, [prayerInfo, loading]);
+  }, [prayerInfo, loading, formatTimeLeft]);
 
   if (loading) {
     return (
@@ -253,6 +253,20 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center p-6 pb-24 max-w-md mx-auto w-full">
+        
+        {/* Fallback Location Indicator */}
+        {isUsingFallback && (
+          <motion.div 
+            className="mb-6 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-xs text-amber-700 font-medium">
+              📍 Using default location (Mecca). <button onClick={() => window.location.reload()} className="underline hover:no-underline">Try again</button>
+            </p>
+          </motion.div>
+        )}
         
         <motion.div 
           className="flex flex-col items-center text-center space-y-2 mb-12"

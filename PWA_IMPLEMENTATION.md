@@ -29,9 +29,9 @@ Your Muslim Focus app now has **perfect PWA support** for both iOS and Android p
 - `client/src/pages/offline.tsx` - Offline fallback page
 - `client/src/hooks/use-network-status.ts` - Network status detection
 - `client/src/components/InstallPrompt.tsx` - Cross-platform install prompts
-- `client/public/manifest.json` - Web app manifest
+- `vite.config.ts` - PWA configuration with manifest generation
 - `client/public/icons/` - Generated PNG icons in all required sizes
-- `client/index.html` - PWA meta tags for iOS/Android
+- `client/index.html` - PWA meta tags for iOS/Android with manifest link
 - `vite.config.ts` - Enhanced PWA configuration with service worker
 - `script/generate-icons.ts` - Icon generation script
 

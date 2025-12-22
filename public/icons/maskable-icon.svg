@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full background for maskable safe zone -->
+  <rect width="512" height="512" fill="#9DC183"/>
+  
+  <!-- Inner content scaled to 80% and centered (safe zone) -->
+  <g transform="translate(51.2, 51.2) scale(0.8)">
+    <circle cx="256" cy="256" r="240" fill="#F9F9F4" stroke="#9DC183" stroke-width="32"/>
+    <path d="M256 120 L320 200 L288 200 L288 320 L224 320 L224 200 L192 200 Z" fill="#9DC183"/>
+    <circle cx="256" cy="160" r="16" fill="#9DC183"/>
+    <text x="256" y="400" text-anchor="middle" font-family="serif" font-size="24" fill="#2D3748">صلاة</text>
+  </g>
+</svg>

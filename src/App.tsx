@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Navigation } from "@/components/Navigation";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AnimatePresence } from "framer-motion";
 import { Suspense, lazy } from "react";
 
@@ -24,31 +25,35 @@ const PageLoader = () => (
 
 function Router() {
   return (
-    <AnimatePresence mode="wait">
-      <Suspense fallback={<PageLoader />}>
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/niyyah" component={Niyyah} />
-          <Route path="/focus" component={Focus} />
-          <Route path="/history" component={History} />
-          <Route path="/offline" component={Offline} />
-          <Route component={NotFound} />
-        </Switch>
-      </Suspense>
-    </AnimatePresence>
+    <ErrorBoundary>
+      <AnimatePresence mode="wait">
+        <Suspense fallback={<PageLoader />}>
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/niyyah" component={Niyyah} />
+            <Route path="/focus" component={Focus} />
+            <Route path="/history" component={History} />
+            <Route path="/offline" component={Offline} />
+            <Route component={NotFound} />
+          </Switch>
+        </Suspense>
+      </AnimatePresence>
+    </ErrorBoundary>
   );
 }
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background">
-        <Toaster />
-        <Router />
-        <Navigation />
-        <InstallPrompt />
-      </div>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <div className="min-h-screen bg-background">
+          <Toaster />
+          <Router />
+          <Navigation />
+          <InstallPrompt />
+        </div>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/Button';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -6,16 +7,21 @@ import { useNetworkStatus } from '@/hooks/use-network-status';
 
 export default function Offline() {
   const isOnline = useNetworkStatus();
+  const [, setLocation] = useLocation();
 
   const handleRetry = () => {
+    // Try to reload first - may restore connection
     window.location.reload();
   };
 
-  if (isOnline) {
-    // If back online, redirect to home
-    window.location.href = '/';
-    return null;
-  }
+  // Use router navigation instead of window.location for better UX
+  useEffect(() => {
+    if (isOnline) {
+      // Navigate using Wouter instead of window.location
+      // Preserves app state and avoids full page reload
+      setLocation('/');
+    }
+  }, [isOnline, setLocation]);
 
   return (
     <motion.div

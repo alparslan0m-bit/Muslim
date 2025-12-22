@@ -69,13 +69,20 @@ export default function Focus() {
   };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isActive) {
-      interval = setInterval(() => {
-        setSeconds((s) => s + 1);
-      }, 1000);
+    // Only set up interval if active
+    if (!isActive) {
+      return;
     }
-    return () => clearInterval(interval);
+
+    // Set up interval for active state
+    const interval = setInterval(() => {
+      setSeconds((s) => s + 1);
+    }, 1000);
+
+    // Proper cleanup: interval is always defined when we reach this point
+    return () => {
+      clearInterval(interval);
+    };
   }, [isActive]);
 
   const formatTime = (totalSeconds: number) => {

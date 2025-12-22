@@ -1,18 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, type InsertSession } from "@shared/routes";
+import { type InsertSession } from "@shared/schema";
+import { LocalStorage } from "@/lib/local-storage";
+
+const SESSIONS_QUERY_KEY = ["sessions"];
 
 export function useSessions() {
   return useQuery({
-    queryKey: [api.sessions.list.path],
+    queryKey: SESSIONS_QUERY_KEY,
     queryFn: async () => {
-      const res = await fetch(api.sessions.list.path);
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed to fetch sessions: ${res.status} ${errorText}`);
-      }
-      return api.sessions.list.responses[200].parse(await res.json());
+      // Use localStorage as primary storage (offline-first PWA)
+      const sessions = LocalStorage.getSessions();
+      return sessions;
     },
-    retry: 2,
+    retry: false,
   });
 }
 
@@ -20,22 +20,12 @@ export function useCreateSession() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (session: InsertSession) => {
-      const res = await fetch(api.sessions.create.path, {
-        method: api.sessions.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(session),
-      });
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed to save session: ${res.status} ${errorText}`);
-      }
-      
-      return api.sessions.create.responses[201].parse(await res.json());
+      // Save to localStorage (works offline)
+      const savedSession = LocalStorage.createSession(session);
+      return savedSession;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [api.sessions.list.path] });
+      queryClient.invalidateQueries({ queryKey: SESSIONS_QUERY_KEY });
     },
-    retry: 2,
   });
 }
