@@ -229,7 +229,9 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
+    middlewareMode: false,
   },
+  appType: 'spa',
   // Optimize dependencies
   optimizeDeps: {
     include: ['react', 'react-dom', 'framer-motion', 'lucide-react', 'date-fns'],
