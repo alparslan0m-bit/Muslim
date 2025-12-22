@@ -15,7 +15,7 @@ export function usePrayerTimes() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. Get Location
+  // 1. Get Location with timeout
   useEffect(() => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser");
@@ -23,17 +23,29 @@ export function usePrayerTimes() {
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCoords(new Coordinates(position.coords.latitude, position.coords.longitude));
-        setLoading(false);
-      },
-      (err) => {
-        setError("Unable to retrieve your location for prayer times.");
-        setLoading(false);
-        console.error(err);
-      }
-    );
+    let timeoutId: NodeJS.Timeout;
+    const handleSuccess = (position: GeolocationPosition) => {
+      clearTimeout(timeoutId);
+      setCoords(new Coordinates(position.coords.latitude, position.coords.longitude));
+      setLoading(false);
+    };
+
+    const handleError = (err: GeolocationPositionError) => {
+      clearTimeout(timeoutId);
+      setError("Unable to retrieve your location. Please enable location access.");
+      setLoading(false);
+      console.error(err);
+    };
+
+    // Set 10 second timeout for geolocation
+    timeoutId = setTimeout(() => {
+      setError("Location request timed out. Please enable location access.");
+      setLoading(false);
+    }, 10000);
+
+    navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   // 2. Calculate Times
