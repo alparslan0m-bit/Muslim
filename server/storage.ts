@@ -1,37 +1,27 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { type Session, type InsertSession } from "@shared/schema";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getSessions(): Promise<Session[]>;
+  createSession(session: InsertSession): Promise<Session>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private sessions: Session[];
+  private currentId: number;
 
   constructor() {
-    this.users = new Map();
+    this.sessions = [];
+    this.currentId = 1;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getSessions(): Promise<Session[]> {
+    return this.sessions;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async createSession(insertSession: InsertSession): Promise<Session> {
+    const session: Session = { ...insertSession, id: this.currentId++ };
+    this.sessions.push(session);
+    return session;
   }
 }
 
