@@ -274,16 +274,8 @@ export default function Home() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 100 }}
         >
-          <motion.div
-            className="absolute inset-0 border border-primary/10 rounded-full scale-100"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute inset-4 border border-primary/20 rounded-full"
-            animate={{ scale: [1, 1.03, 1] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          />
+          <div className="absolute inset-0 border border-primary/10 rounded-full" />
+          <div className="absolute inset-4 border border-primary/20 rounded-full" />
 
           <div className="text-center z-10 px-4">
             <motion.div
