@@ -9,11 +9,15 @@ export const sessions = pgTable("sessions", {
   endTime: timestamp("end_time"),
   durationSeconds: integer("duration_seconds").notNull(),
   date: text("date").notNull(), // ISO date string YYYY-MM-DD
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const insertSessionSchema = createInsertSchema(sessions)
   .omit({
     id: true,
+    createdAt: true,
+    updatedAt: true,
   })
   .extend({
     startTime: z.union([z.date(), z.string().pipe(z.coerce.date())]),
