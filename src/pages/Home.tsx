@@ -15,13 +15,13 @@ export default function Home() {
   const formatTimeLeft = useCallback((nextPrayerTime: Date) => {
     const now = new Date();
     const diff = nextPrayerTime.getTime() - now.getTime();
-    
+
     if (diff <= 0) return "Now";
-    
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
+
     return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }, []);
 
@@ -47,41 +47,26 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <motion.div 
-          className="flex flex-col items-center gap-6"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
-            <Loader2 className="w-12 h-12 text-primary" />
-          </motion.div>
-          <motion.p 
-            className="text-muted-foreground font-serif text-lg"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            Getting your location...
-          </motion.p>
-          <motion.div 
-            className="w-32 h-1 bg-primary/20 rounded-full overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <motion.div
-              className="h-full bg-primary rounded-full"
-              initial={{ x: "-100%" }}
-              animate={{ x: "100%" }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div>
-        </motion.div>
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+        <div className="w-full max-w-md space-y-12 flex flex-col items-center">
+          {/* Header Skeleton */}
+          <div className="space-y-4 flex flex-col items-center w-full animate-pulse">
+            <div className="h-4 w-32 bg-muted rounded-full" />
+            <div className="h-10 w-48 bg-muted rounded-lg" />
+          </div>
+
+          {/* Timer Skeleton - Premium Ring */}
+          <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-muted/30 flex items-center justify-center">
+            <div className="w-full h-full rounded-full border-t-4 border-primary/50 animate-spin absolute" style={{ animationDuration: '3s' }} />
+            <div className="h-16 w-32 bg-muted rounded-lg animate-pulse" />
+          </div>
+
+          {/* Button Skeleton */}
+          <div className="w-full space-y-4">
+            <div className="h-14 w-full bg-muted rounded-xl animate-pulse" />
+            <div className="h-3 w-48 bg-muted rounded-full mx-auto animate-pulse" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -113,8 +98,8 @@ export default function Home() {
           >
             <RefreshCw className="w-10 h-10 text-destructive" />
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             className="text-2xl font-serif text-destructive mb-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -122,8 +107,8 @@ export default function Home() {
           >
             Location Access Required
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             className="text-muted-foreground mb-6 leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -131,8 +116,8 @@ export default function Home() {
           >
             {error}
           </motion.p>
-          
-          <motion.p 
+
+          <motion.p
             className="text-sm text-muted-foreground/80 max-w-xs mb-8 mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -140,22 +125,22 @@ export default function Home() {
           >
             This app requires location access to calculate accurate prayer times for your area.
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             className="space-y-3"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.5 }}
           >
-            <Button 
+            <Button
               onClick={handleRetry}
               className="w-full flex items-center gap-2 shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
               <RefreshCw className="w-4 h-4" />
               Try Again
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={handleSkipLocation}
               variant="outline"
               className="w-full"
@@ -171,7 +156,7 @@ export default function Home() {
   // Prayer Time Overlay
   if (prayerInfo?.isPrayerTimeNow) {
     return (
-      <motion.div 
+      <motion.div
         className="min-h-screen flex flex-col items-center justify-center bg-primary text-primary-foreground p-6 text-center relative overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -195,8 +180,8 @@ export default function Home() {
         >
           <CloudSun className="w-20 h-20 mb-8 opacity-90 animate-breathe" />
         </motion.div>
-        
-        <motion.h1 
+
+        <motion.h1
           className="text-5xl md:text-6xl font-serif mb-6"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -204,8 +189,8 @@ export default function Home() {
         >
           Time for Salah
         </motion.h1>
-        
-        <motion.p 
+
+        <motion.p
           className="text-xl opacity-90 font-light leading-relaxed max-w-md"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -218,32 +203,32 @@ export default function Home() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen flex flex-col bg-background relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
       {/* Decorative Background Elements */}
-      <motion.div 
+      <motion.div
         className="absolute top-[-10%] right-[-10%] w-[50vh] h-[50vh] bg-primary/5 rounded-full blur-3xl -z-10"
-        animate={{ 
+        animate={{
           scale: [1, 1.1, 1],
-          opacity: [0.3, 0.5, 0.3] 
+          opacity: [0.3, 0.5, 0.3]
         }}
-        transition={{ 
+        transition={{
           duration: 8,
           repeat: Infinity,
           ease: "easeInOut"
         }}
       />
-      <motion.div 
+      <motion.div
         className="absolute bottom-[-10%] left-[-10%] w-[40vh] h-[40vh] bg-accent/20 rounded-full blur-3xl -z-10"
-        animate={{ 
+        animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.2, 0.4, 0.2] 
+          opacity: [0.2, 0.4, 0.2]
         }}
-        transition={{ 
+        transition={{
           duration: 10,
           repeat: Infinity,
           ease: "easeInOut",
@@ -253,10 +238,10 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center p-6 pb-24 max-w-md mx-auto w-full">
-        
+
         {/* Fallback Location Indicator */}
         {isUsingFallback && (
-          <motion.div 
+          <motion.div
             className="mb-6 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -267,8 +252,8 @@ export default function Home() {
             </p>
           </motion.div>
         )}
-        
-        <motion.div 
+
+        <motion.div
           className="flex flex-col items-center text-center space-y-2 mb-12"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -283,25 +268,25 @@ export default function Home() {
         </motion.div>
 
         {/* Timer Display */}
-        <motion.div 
+        <motion.div
           className="relative w-56 h-56 md:w-80 md:h-80 flex items-center justify-center mb-16"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 100 }}
         >
-          <motion.div 
+          <motion.div
             className="absolute inset-0 border border-primary/10 rounded-full scale-100"
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
-          <motion.div 
+          <motion.div
             className="absolute inset-4 border border-primary/20 rounded-full"
             animate={{ scale: [1, 1.03, 1] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           />
-          
+
           <div className="text-center z-10 px-4">
-            <motion.div 
+            <motion.div
               className="text-5xl md:text-7xl font-mono font-light tracking-tight text-primary break-words"
               key={timeLeft} // Re-animate when time changes
               initial={{ scale: 0.95, opacity: 0.8 }}
@@ -317,7 +302,7 @@ export default function Home() {
         </motion.div>
 
         {/* Action */}
-        <motion.div 
+        <motion.div
           className="w-full space-y-4"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -327,9 +312,9 @@ export default function Home() {
             whileHover={prayerInfo ? { scale: 1.02 } : {}}
             whileTap={prayerInfo ? { scale: 0.98 } : {}}
           >
-            <Button 
+            <Button
               onClick={() => setLocation('/niyyah')}
-              size="lg" 
+              size="lg"
               className="w-full text-lg shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
               disabled={!prayerInfo || loading}
               aria-label="Start a new focus session with intention"
@@ -347,8 +332,8 @@ export default function Home() {
               )}
             </Button>
           </motion.div>
-          
-          <motion.p 
+
+          <motion.p
             className="text-xs text-center text-muted-foreground/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

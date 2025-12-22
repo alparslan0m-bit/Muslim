@@ -7,66 +7,66 @@
 :root {
   /* Earthy Palette */
   /* Cream/Beige Background: #F9F9F4 */
-  --background: 60 20% 97%; 
+  --background: 60 20% 97%;
   /* Deep Slate Text: #2D3748 */
   --foreground: 218 23% 23%;
-  
+
   /* Sage Green: #9DC183 */
   --primary: 95 38% 62%;
   --primary-foreground: 0 0% 100%;
-  
+
   /* Soft Sand/Taupe for secondary elements */
   --secondary: 40 20% 92%;
   --secondary-foreground: 218 23% 23%;
-  
+
   /* Muted earthy tones */
   --muted: 40 10% 94%;
   --muted-foreground: 218 10% 55%;
-  
+
   /* Warm accent (terra cotta-ish for subtle highlights if needed) */
   --accent: 30 40% 90%;
   --accent-foreground: 218 23% 23%;
-  
+
   --destructive: 0 50% 60%;
   --destructive-foreground: 0 0% 98%;
 
   --border: 40 15% 90%;
   --input: 40 15% 90%;
   --ring: 95 38% 62%;
-  
+
   --card: 60 20% 97%;
   --card-foreground: 218 23% 23%;
   --card-border: 40 15% 90%;
-  
+
   --popover: 60 20% 97%;
   --popover-foreground: 218 23% 23%;
   --popover-border: 40 15% 90%;
-  
+
   --primary-border: 95 38% 62%;
   --secondary-border: 40 20% 92%;
   --muted-border: 40 10% 94%;
   --accent-border: 30 40% 90%;
   --destructive-border: 0 50% 60%;
-  
+
   --sidebar: 60 20% 97%;
   --sidebar-foreground: 218 23% 23%;
   --sidebar-border: 40 15% 90%;
   --sidebar-ring: 95 38% 62%;
-  
+
   --sidebar-primary: 95 38% 62%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-primary-border: 95 38% 62%;
-  
+
   --sidebar-accent: 30 40% 90%;
   --sidebar-accent-foreground: 218 23% 23%;
   --sidebar-accent-border: 30 40% 90%;
-  
+
   --chart-1: 95 38% 62%;
   --chart-2: 40 20% 92%;
   --chart-3: 40 10% 94%;
   --chart-4: 30 40% 90%;
   --chart-5: 0 50% 60%;
-  
+
   --radius: 1rem;
 }
 
@@ -74,12 +74,19 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20;
     font-family: 'Inter', sans-serif;
     scroll-behavior: smooth;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Libre Baskerville', serif;
     @apply font-normal tracking-tight text-foreground;
   }
@@ -95,7 +102,10 @@
 
   /* Reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -108,17 +118,48 @@
   .text-balance {
     text-wrap: balance;
   }
-  
-  .glass-panel {
-    @apply bg-white/40 backdrop-blur-md border border-white/50 shadow-sm;
+
+  .bg-noise {
+    position: relative;
   }
-  
+
+  .bg-noise::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  .glass-panel {
+    @apply bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg shadow-black/5;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.8s ease-out forwards;
   }
-  
+
   .animate-breathe {
-    animation: breathe 4s ease-in-out infinite;
+    animation: breathe 5s ease-in-out infinite;
     will-change: transform, opacity;
   }
 
@@ -128,51 +169,99 @@
   }
 
   .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
+    animation: glow 3s ease-in-out infinite alternate;
     will-change: box-shadow;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.6s ease-out forwards;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.5s ease-out forwards;
+    animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Text gradient utility */
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-600 via-orange-500 to-yellow-600;
   }
 
   /* Performance optimizations */
   .gpu-accelerated {
     transform: translateZ(0);
     will-change: transform;
+    backface-visibility: hidden;
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.02); }
+
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes glow {
-  from { box-shadow: 0 0 20px rgba(157, 193, 131, 0.3); }
-  to { box-shadow: 0 0 30px rgba(157, 193, 131, 0.6); }
+  from {
+    box-shadow: 0 0 20px rgba(157, 193, 131, 0.3);
+  }
+
+  to {
+    box-shadow: 0 0 30px rgba(157, 193, 131, 0.6);
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

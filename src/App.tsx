@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Navigation } from "@/components/Navigation";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { NetworkStatus } from "@/components/NetworkStatus";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AnimatePresence } from "framer-motion";
 import { Suspense, lazy } from "react";
@@ -51,6 +52,7 @@ function App() {
           <Router />
           <Navigation />
           <InstallPrompt />
+          <NetworkStatus />
         </div>
       </QueryClientProvider>
     </ErrorBoundary>

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, History, User } from "lucide-react";
+import { Home, History, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -8,61 +8,91 @@ export function Navigation() {
 
   const navItems = [
     { href: "/", icon: Home, label: "Today" },
+    { href: "/niyyah", icon: Compass, label: "Focus", isAction: true }, // Highlighted action button
     { href: "/history", icon: History, label: "History" },
   ];
 
-  // Don't show nav on Focus or Niyyah screens to prevent distraction
-  if (location === "/focus" || location === "/niyyah") return null;
+  // Haptic feedback helper
+  const triggerHaptic = () => {
+    if (navigator.vibrate) {
+      navigator.vibrate(10); // Subtle tick
+    }
+  };
+
+  // Don't show nav on Focus screen or active session
+  if (location === "/focus") return null;
 
   return (
-    <motion.nav 
-      className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background to-transparent z-50"
+    <motion.nav
+      className="fixed bottom-6 left-0 right-0 z-40 flex justify-center pointer-events-none"
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} // Custom easing
     >
-      <div className="max-w-md mx-auto bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-white/50 px-6 py-3 flex justify-around items-center">
-        {navItems.map((item, index) => (
-          <motion.div
-            key={item.href}
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.8 + index * 0.1, duration: 0.4, type: "spring", stiffness: 300 }}
-          >
-            <Link href={item.href}>
-              <motion.div
-                className={cn(
-                  "flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 cursor-pointer group",
-                  location === item.href
-                    ? "text-primary scale-110"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <motion.div
-                  animate={location === item.href ? { y: [0, -2, 0] } : {}}
-                  transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <item.icon
+      <div className="pointer-events-auto bg-white/80 dark:bg-black/60 backdrop-blur-xl rounded-full shadow-lg shadow-black/5 border border-white/20 dark:border-white/10 p-1.5 flex items-center gap-1 mx-4">
+        {navItems.map((item) => {
+          const isActive = location === item.href;
+
+          return (
+            <Link key={item.href} href={item.href} onClick={triggerHaptic}>
+              <div className="relative">
+                {/* Active Indicator Background */}
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-pill"
                     className={cn(
-                      "w-6 h-6 transition-all duration-300",
-                      location === item.href ? "stroke-[2.5px]" : "stroke-2"
+                      "absolute inset-0 rounded-full",
+                      item.isAction ? "bg-primary/10" : "bg-primary/10"
                     )}
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
-                </motion.div>
-                <motion.span 
-                  className="text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-5"
-                  initial={{ opacity: 0, y: 5 }}
-                  whileHover={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
+                )}
+
+                <motion.div
+                  className={cn(
+                    "relative px-5 py-3 rounded-full flex flex-col items-center gap-1 transition-colors duration-300 min-w-[72px]",
+                    isActive
+                      ? "text-primary dark:text-primary"
+                      : "text-muted-foreground hover:text-foreground active:text-foreground"
+                  )}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {item.label}
-                </motion.span>
-              </motion.div>
+                  <motion.div
+                    animate={isActive && item.isAction ? {
+                      scale: [1, 1.1, 1],
+                      rotate: [0, 5, -5, 0]
+                    } : {}}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                  >
+                    <item.icon
+                      className={cn(
+                        "w-6 h-6 transition-all duration-300",
+                        isActive ? "stroke-[2.5px] fill-current/10" : "stroke-2",
+                        item.isAction && !isActive && "text-primary"
+                      )}
+                    />
+                  </motion.div>
+
+                  {/* Label - Only visible when active for cleaner look, or always visible if preferred */}
+                  <AnimatePresence>
+                    {isActive && (
+                      <motion.span
+                        className="text-[10px] font-semibold absolute -bottom-5"
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 5 }}
+                        exit={{ opacity: 0, y: -5 }}
+                      >
+                        <span className="w-1 h-1 rounded-full bg-primary block" />
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </div>
             </Link>
-          </motion.div>
-        ))}
+          );
+        })}
       </div>
     </motion.nav>
   );
