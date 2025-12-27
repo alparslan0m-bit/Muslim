@@ -8,24 +8,18 @@ interface PageLayoutProps {
 
 export function PageLayout({ title, children }: PageLayoutProps) {
   const [isScrolled, setIsScrolled] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (scrollRef.current) {
-        setIsScrolled(scrollRef.current.scrollTop > 50);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
-    const element = scrollRef.current;
-    if (element) {
-      element.addEventListener('scroll', handleScroll);
-      return () => element.removeEventListener('scroll', handleScroll);
-    }
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       {/* Large Title */}
       <motion.div
         className="px-6 pt-12 pb-6"
@@ -53,15 +47,9 @@ export function PageLayout({ title, children }: PageLayoutProps) {
         </div>
       </motion.div>
 
-      {/* Scrollable Content */}
-      <div
-        ref={scrollRef}
-        className="h-screen overflow-y-auto"
-        style={{ paddingTop: isScrolled ? 'calc(env(safe-area-inset-top, 0px) + 64px)' : '0' }}
-      >
-        <div className="px-6 pb-20">
-          {children}
-        </div>
+      {/* Content */}
+      <div className="px-6">
+        {children}
       </div>
     </div>
   );

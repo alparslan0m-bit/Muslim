@@ -1,13 +1,17 @@
 import { useSessions } from "@/hooks/use-sessions";
 import { format } from "date-fns";
 import { Clock, ArrowLeft, RefreshCw, Trophy, Flame, Calendar as CalendarIcon, Sparkles } from "lucide-react";
-import { Link } from "wouter";
 import { Button } from "@/components/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export default function History() {
+interface HistoryProps {
+  onBackToHome?: () => void;
+  onTabChange?: (tab: 'home' | 'focus' | 'history') => void;
+}
+
+export default function History({ onBackToHome, onTabChange }: HistoryProps) {
   const { data: sessions, isLoading, error, refetch } = useSessions();
 
   const formatDuration = (seconds: number) => {
@@ -93,11 +97,11 @@ export default function History() {
             <h1 className="text-3xl font-serif text-foreground tracking-tight">My Journey</h1>
             <p className="text-muted-foreground text-sm font-medium tracking-wide opacity-80 mt-1">Track your spiritual growth</p>
           </div>
-          <Link href="/">
+          <button onClick={onBackToHome}>
             <Button variant="ghost" size="icon" className="group rounded-full w-12 h-12 hover:bg-muted/60">
               <ArrowLeft className="w-6 h-6 text-foreground/80 group-hover:-translate-x-1 transition-transform duration-300" />
             </Button>
-          </Link>
+          </button>
         </header>
 
         {/* Stats Grid using Bento-box style */}
@@ -165,11 +169,11 @@ export default function History() {
               <p className="text-muted-foreground text-sm mb-6 max-w-[240px] mx-auto text-balance">
                 "The most beloved deeds to Allah are those that are consistent, even if they are small."
               </p>
-              <Link href="/niyyah">
+              <button onClick={() => onTabChange && onTabChange('focus')}>
                 <Button className="rounded-full px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
                   Start Session
                 </Button>
-              </Link>
+              </button>
             </motion.div>
           ) : (
             <div className="space-y-10">

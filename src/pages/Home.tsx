@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useLocation } from "wouter";
 import { usePrayerTimes } from "@/hooks/use-prayer-times";
 import { Button } from "@/components/Button";
 import { PageLayout } from "@/components/PageLayout";
@@ -7,7 +6,11 @@ import { Loader2, ArrowRight, Sun, Moon, CloudSun, RefreshCw, MapPin } from "luc
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Home() {
+interface HomeProps {
+  onNavigate: (tab: 'focus' | 'history') => void;
+}
+
+export default function Home({ onNavigate }: HomeProps) {
   const { prayerInfo, loading, error, isUsingFallback } = usePrayerTimes();
   const [, setLocation] = useLocation();
   const [timeLeft, setTimeLeft] = useState<string>("--:--:--");
@@ -253,7 +256,7 @@ export default function Home() {
             whileTap={prayerInfo ? { scale: 0.98 } : {}}
           >
             <Button
-              onClick={() => setLocation('/niyyah')}
+              onClick={() => onNavigate('focus')} // ✅ Uses the prop
               size="lg"
               className="w-full h-12 rounded-xl shadow-sm active:scale-95 active:opacity-80"
               disabled={!prayerInfo || loading}
@@ -296,12 +299,13 @@ export default function Home() {
           <div className="bg-background rounded-xl mx-4 mb-4 p-4 shadow-sm">
             <h3 className="text-lg font-semibold mb-3">Quick Actions</h3>
             <div className="space-y-2">
-              <Link href="/history">
-                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-colors">
-                  <span className="text-foreground">View History</span>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                </div>
-              </Link>
+              <button 
+                onClick={() => onNavigate('history')} 
+                className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-colors"
+              >
+                <span className="text-foreground">View History</span>
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+              </button>
             </div>
           </div>
         </div>

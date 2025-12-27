@@ -1,25 +1,25 @@
-import { Link, useLocation } from "wouter";
 import { Home, History, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useHapticFeedback } from "@/hooks/use-pwa";
 
-export function Navigation() {
-  const [location] = useLocation();
+interface NavigationProps {
+  activeTab: 'home' | 'focus' | 'history';
+  onTabChange: (tab: 'home' | 'focus' | 'history') => void;
+}
+
+export function Navigation({ activeTab, onTabChange }: NavigationProps) {
   const haptic = useHapticFeedback();
 
   const navItems = [
-    { href: "/", icon: Home, label: "Today" },
-    { href: "/niyyah", icon: Compass, label: "Focus" },
-    { href: "/history", icon: History, label: "History" },
+    { id: 'home' as const, icon: Home, label: "Today" },
+    { id: 'focus' as const, icon: Compass, label: "Focus" },
+    { id: 'history' as const, icon: History, label: "History" },
   ];
 
   const handleNavClick = () => {
     haptic.tap();
   };
-
-  // Don't show nav on Focus screen or active session
-  if (location === "/focus") return null;
 
   return (
     <motion.nav
@@ -31,31 +31,35 @@ export function Navigation() {
     >
       <div className="flex items-center justify-around px-4 py-2">
         {navItems.map((item) => {
-          const isActive = location === item.href;
+          const isActive = activeTab === item.id;
 
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={handleNavClick}
+            <button
+              key={item.id}
+              onClick={() => {
+                handleNavClick();
+                onTabChange(item.id);
+              }}
               className="flex flex-col items-center justify-center flex-1 py-2"
             >
               <motion.div
                 className={cn(
-                  "flex flex-col items-center gap-1 transition-colors duration-200",
+                  "flex flex-col items-center gap-1 transition-all duration-200",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
                 whileTap={{ scale: 0.95 }}
               >
                 <item.icon
                   className={cn(
-                    "w-6 h-6",
-                    isActive ? "stroke-[2px]" : "stroke-[1.5px]"
+                    "w-6 h-6 transition-all duration-200",
+                    isActive 
+                      ? "stroke-[2.5px] text-primary" // Thicker stroke + Color
+                      : "stroke-[1.5px] text-muted-foreground"
                   )}
                 />
                 <span className="text-xs font-medium">{item.label}</span>
               </motion.div>
-            </Link>
+            </button>
           );
         })}
       </div>
