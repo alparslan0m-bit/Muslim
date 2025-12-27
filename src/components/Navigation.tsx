@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Home, History, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useHapticFeedback } from "@/hooks/use-pwa";
 
 export function Navigation() {
@@ -10,17 +10,12 @@ export function Navigation() {
 
   const navItems = [
     { href: "/", icon: Home, label: "Today" },
-    { href: "/niyyah", icon: Compass, label: "Focus", isAction: true }, // Highlighted action button
+    { href: "/niyyah", icon: Compass, label: "Focus" },
     { href: "/history", icon: History, label: "History" },
   ];
 
-  // Premium haptic feedback patterns
-  const handleNavClick = (isAction: boolean) => {
-    if (isAction) {
-      haptic.selection(); // Different feedback for action button
-    } else {
-      haptic.tap();
-    }
+  const handleNavClick = () => {
+    haptic.tap();
   };
 
   // Don't show nav on Focus screen or active session
@@ -28,12 +23,13 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className="fixed bottom-8 left-0 right-0 z-50 flex justify-center pointer-events-none"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-t border-black/5 dark:border-white/10"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="pointer-events-auto bg-white/90 dark:bg-black/80 backdrop-blur-2xl rounded-full shadow-2xl shadow-black/10 border border-white/20 dark:border-white/10 p-2 flex items-center gap-2 mx-6 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-black/60">
+      <div className="flex items-center justify-around px-4 py-2">
         {navItems.map((item) => {
           const isActive = location === item.href;
 
@@ -41,64 +37,24 @@ export function Navigation() {
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => handleNavClick(item.isAction)}
+              onClick={handleNavClick}
+              className="flex flex-col items-center justify-center flex-1 py-2"
             >
-              <div className="relative group cursor-pointer">
-                {/* Active Indicator Background */}
-                {isActive && (
-                  <motion.div
-                    layoutId="nav-pill"
-                    className={cn(
-                      "absolute inset-0 rounded-full shadow-sm",
-                      item.isAction ? "bg-primary/20" : "bg-primary/15"
-                    )}
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
+              <motion.div
+                className={cn(
+                  "flex flex-col items-center gap-1 transition-colors duration-200",
+                  isActive ? "text-primary" : "text-muted-foreground"
                 )}
-
-                <motion.div
+                whileTap={{ scale: 0.95 }}
+              >
+                <item.icon
                   className={cn(
-                    "relative px-6 py-3.5 rounded-full flex flex-col items-center gap-1 transition-colors duration-500",
-                    isActive
-                      ? "text-primary dark:text-primary"
-                      : "text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 active:text-foreground"
+                    "w-6 h-6",
+                    isActive ? "stroke-[2px]" : "stroke-[1.5px]"
                   )}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <motion.div
-                    animate={isActive && item.isAction ? {
-                      scale: [1, 1.15, 1],
-                      rotate: [0, 10, -10, 0]
-                    } : {}}
-                    transition={{ duration: 0.6, ease: "easeInOut", repeat: isActive && item.isAction ? Infinity : 0, repeatDelay: 5 }}
-                  >
-                    <item.icon
-                      className={cn(
-                        "w-6 h-6 transition-all duration-500",
-                        isActive ? "stroke-[2.5px] fill-current/20" : "stroke-[1.5px]",
-                        item.isAction && !isActive && "text-primary/70"
-                      )}
-                    />
-                  </motion.div>
-
-                  {/* Dot Indicator for Active State */}
-                  <AnimatePresence>
-                    {isActive && (
-                      <motion.div
-                        className="absolute -bottom-1"
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <div className="w-1 h-1 rounded-full bg-primary shadow-glow-sm" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              </div>
+                />
+                <span className="text-xs font-medium">{item.label}</span>
+              </motion.div>
             </Link>
           );
         })}

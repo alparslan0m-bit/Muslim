@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import { usePrayerTimes } from "@/hooks/use-prayer-times";
 import { Button } from "@/components/Button";
-import { Loader2, ArrowRight, Sun, Moon, CloudSun, RefreshCw } from "lucide-react";
+import { PageLayout } from "@/components/PageLayout";
+import { Loader2, ArrowRight, Sun, Moon, CloudSun, RefreshCw, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -203,102 +204,50 @@ export default function Home() {
   }
 
   return (
-    <motion.div
-      className="min-h-screen flex flex-col bg-background relative overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
-      {/* Decorative Background Elements */}
-      <motion.div
-        className="absolute top-[-10%] right-[-10%] w-[50vh] h-[50vh] bg-primary/5 rounded-full blur-3xl -z-10"
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.3, 0.5, 0.3]
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
-      <motion.div
-        className="absolute bottom-[-10%] left-[-10%] w-[40vh] h-[40vh] bg-accent/20 rounded-full blur-3xl -z-10"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.2, 0.4, 0.2]
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2
-        }}
-      />
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 pb-40 max-w-md mx-auto w-full">
-
-        {/* Fallback Location Indicator */}
-        {isUsingFallback && (
-          <motion.div
-            className="mb-6 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <p className="text-xs text-amber-700 font-medium">
-              📍 Using default location (Mecca). <button onClick={() => window.location.reload()} className="underline hover:no-underline">Try again</button>
-            </p>
-          </motion.div>
-        )}
-
+    <PageLayout title="Today">
+      <div className="space-y-6">
+        {/* Next Prayer Card */}
         <motion.div
-          className="flex flex-col items-center text-center space-y-2 mb-12"
+          className="bg-background rounded-xl p-6 shadow-sm border border-border"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.8 }}
         >
-          <span className="text-sm uppercase tracking-widest text-muted-foreground font-medium">
-            {prayerInfo ? "Next Prayer" : "Loading Prayer Times"}
-          </span>
-          <h2 className="text-3xl font-serif text-foreground">
-            {prayerInfo ? prayerInfo.nextPrayerName : "Please wait..."}
-          </h2>
-        </motion.div>
-
-        {/* Timer Display */}
-        <motion.div
-          className="relative w-56 h-56 md:w-80 md:h-80 flex items-center justify-center mb-16"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 100 }}
-        >
-          <div className="absolute inset-0 border border-primary/10 rounded-full" />
-          <div className="absolute inset-4 border border-primary/20 rounded-full" />
-
-          <div className="text-center z-10 px-4">
-            <motion.div
-              className="text-5xl md:text-7xl font-mono font-light tracking-tight text-primary break-words"
-              initial={{ scale: 1, opacity: 1 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {timeLeft}
-            </motion.div>
-            <p className="text-sm text-muted-foreground mt-2">
-              {prayerInfo ? "until Adhan" : "calculating..."}
-            </p>
+          <div className="text-center space-y-2 mb-6">
+            <span className="text-sm uppercase tracking-widest text-muted-foreground font-medium">
+              Next Prayer
+            </span>
+            <h2 className="text-2xl font-semibold text-foreground">
+              {prayerInfo ? prayerInfo.nextPrayerName : "Loading..."}
+            </h2>
           </div>
-        </motion.div>
 
-        {/* Action */}
-        <motion.div
-          className="w-full space-y-4"
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-        >
+          {/* Timer Display */}
+          <motion.div
+            className="relative w-48 h-48 mx-auto flex items-center justify-center mb-6"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 100 }}
+          >
+            <div className="absolute inset-0 border border-primary/10 rounded-full" />
+            <div className="absolute inset-4 border border-primary/20 rounded-full" />
+
+            <div className="text-center z-10">
+              <motion.div
+                className="text-4xl font-mono font-light tracking-tight text-primary"
+                initial={{ scale: 1, opacity: 1 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                {timeLeft}
+              </motion.div>
+              <p className="text-sm text-muted-foreground mt-2">
+                until Adhan
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Action Button */}
           <motion.div
             whileHover={prayerInfo ? { scale: 1.02 } : {}}
             whileTap={prayerInfo ? { scale: 0.98 } : {}}
@@ -306,7 +255,7 @@ export default function Home() {
             <Button
               onClick={() => setLocation('/niyyah')}
               size="lg"
-              className="w-full text-lg shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+              className="w-full h-12 rounded-xl shadow-sm active:scale-95 active:opacity-80"
               disabled={!prayerInfo || loading}
               aria-label="Start a new focus session with intention"
             >
@@ -323,17 +272,40 @@ export default function Home() {
               )}
             </Button>
           </motion.div>
-
-          <motion.p
-            className="text-xs text-center text-muted-foreground/60"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-          >
-            {prayerInfo ? "Use this time to work with intention" : "Please wait while we calculate prayer times"}
-          </motion.p>
         </motion.div>
-      </main>
-    </motion.div>
+
+        {/* Fallback Location Indicator */}
+        {isUsingFallback && (
+          <motion.div
+            className="bg-background rounded-xl p-4 shadow-sm border border-border"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center gap-3">
+              <MapPin className="w-5 h-5 text-amber-600" />
+              <p className="text-sm text-amber-700 font-medium">
+                Using default location (Mecca). <button onClick={() => window.location.reload()} className="underline hover:no-underline">Try again</button>
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Quick Actions Group */}
+        <div className="bg-secondary rounded-xl mx-0">
+          <div className="bg-background rounded-xl mx-4 mb-4 p-4 shadow-sm">
+            <h3 className="text-lg font-semibold mb-3">Quick Actions</h3>
+            <div className="space-y-2">
+              <Link href="/history">
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-colors">
+                  <span className="text-foreground">View History</span>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
   );
 }

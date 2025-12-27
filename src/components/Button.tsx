@@ -20,14 +20,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const sizes = {
       sm: "h-9 px-4 text-sm",
       md: "h-11 px-6 text-base",
-      lg: "h-14 px-8 text-lg",
+      lg: "h-12 px-8 text-base",
     }
 
     return (
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-2xl font-medium transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 active:scale-95 active:opacity-80 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           variants[variant],
           sizes[size],
           className

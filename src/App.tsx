@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,7 +7,7 @@ import { InstallPrompt } from "@/components/InstallPrompt";
 import { NetworkStatus } from "@/components/NetworkStatus";
 import { PWASplashScreen } from "@/components/PWASplashScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Suspense, lazy } from "react";
 
 // Lazy load pages for better performance
@@ -26,19 +26,30 @@ const PageLoader = () => (
 );
 
 function Router() {
+  const [location] = useLocation();
+
   return (
     <ErrorBoundary>
-      <AnimatePresence mode="wait">
-        <Suspense fallback={<PageLoader />}>
-          <Switch>
-            <Route path="/" component={Home} />
-            <Route path="/niyyah" component={Niyyah} />
-            <Route path="/focus" component={Focus} />
-            <Route path="/history" component={History} />
-            <Route path="/offline" component={Offline} />
-            <Route component={NotFound} />
-          </Switch>
-        </Suspense>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={location}
+          initial={{ x: 100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -30, opacity: 0.5 }}
+          transition={{ type: "spring", damping: 20, stiffness: 300 }}
+          className="min-h-screen"
+        >
+          <Suspense fallback={<PageLoader />}>
+            <Switch location={location}>
+              <Route path="/" component={Home} />
+              <Route path="/niyyah" component={Niyyah} />
+              <Route path="/focus" component={Focus} />
+              <Route path="/history" component={History} />
+              <Route path="/offline" component={Offline} />
+              <Route component={NotFound} />
+            </Switch>
+          </Suspense>
+        </motion.div>
       </AnimatePresence>
     </ErrorBoundary>
   );

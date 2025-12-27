@@ -28,123 +28,121 @@ html, body {
 }
 
 :root {
-  /* Earthy Palette */
-  /* Cream/Beige Background: #F9F9F4 */
-  --background: 60 20% 97%;
-  /* Deep Slate Text: #2D3748 */
-  --foreground: 218 23% 23%;
+  /* Apple Semantic Colors */
+  --background: 0 0% 100%; /* SystemBackground: #FFFFFE */
+  --foreground: 0 0% 9%; /* High contrast text */
 
-  /* Sage Green: #9DC183 */
+  /* Primary: Keep sage green but ensure high contrast */
   --primary: 95 38% 62%;
   --primary-foreground: 0 0% 100%;
 
-  /* Soft Sand/Taupe for secondary elements */
-  --secondary: 40 20% 92%;
-  --secondary-foreground: 218 23% 23%;
+  /* SecondarySystemBackground: #F2F2F7 */
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 0 0% 9%;
 
-  /* Muted earthy tones */
-  --muted: 40 10% 94%;
-  --muted-foreground: 218 10% 55%;
+  /* Muted for subtle elements */
+  --muted: 210 40% 96%;
+  --muted-foreground: 0 0% 45%;
 
-  /* Warm accent (terra cotta-ish for subtle highlights if needed) */
-  --accent: 30 40% 90%;
-  --accent-foreground: 218 23% 23%;
+  /* Accent: Use primary */
+  --accent: 95 38% 62%;
+  --accent-foreground: 0 0% 100%;
 
   --destructive: 0 50% 60%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 40 15% 90%;
-  --input: 40 15% 90%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
   --ring: 95 38% 62%;
 
-  --card: 60 20% 97%;
-  --card-foreground: 218 23% 23%;
-  --card-border: 40 15% 90%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+  --card-border: 0 0% 90%;
 
-  --popover: 60 20% 97%;
-  --popover-foreground: 218 23% 23%;
-  --popover-border: 40 15% 90%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  --popover-border: 0 0% 90%;
 
   --primary-border: 95 38% 62%;
-  --secondary-border: 40 20% 92%;
-  --muted-border: 40 10% 94%;
-  --accent-border: 30 40% 90%;
+  --secondary-border: 210 40% 96%;
+  --muted-border: 210 40% 96%;
+  --accent-border: 95 38% 62%;
   --destructive-border: 0 50% 60%;
 
-  --sidebar: 60 20% 97%;
-  --sidebar-foreground: 218 23% 23%;
-  --sidebar-border: 40 15% 90%;
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 0 0% 9%;
+  --sidebar-border: 0 0% 90%;
   --sidebar-ring: 95 38% 62%;
 
   --sidebar-primary: 95 38% 62%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-primary-border: 95 38% 62%;
 
-  --sidebar-accent: 30 40% 90%;
-  --sidebar-accent-foreground: 218 23% 23%;
-  --sidebar-accent-border: 30 40% 90%;
+  --sidebar-accent: 95 38% 62%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-accent-border: 95 38% 62%;
 
   --chart-1: 95 38% 62%;
-  --chart-2: 40 20% 92%;
-  --chart-3: 40 10% 94%;
-  --chart-4: 30 40% 90%;
+  --chart-2: 210 40% 96%;
+  --chart-3: 0 0% 90%;
+  --chart-4: 0 0% 80%;
   --chart-5: 0 50% 60%;
 
-  --radius: 1rem;
+  --radius: 0.75rem; /* 12px for rounded-xl */
 }
 
 .dark {
-  /* Warm Dark Mode Palette (Stone/Earthy) */
-  --background: 20 14.3% 4.1%;
-  --foreground: 60 9.1% 97.8%;
+  /* Apple Dark Mode Semantic Colors */
+  --background: 0 0% 0%; /* SystemBackground: #000000 */
+  --foreground: 0 0% 100%;
 
-  /* Keep Sage Green as primary, but ensure visibility */
   --primary: 95 38% 62%;
-  --primary-foreground: 24 9.8% 10%;
+  --primary-foreground: 0 0% 0%;
 
-  /* Darker surfaces for cards/components */
-  --card: 24 9.8% 10%;
-  --card-foreground: 60 9.1% 97.8%;
-  --card-border: 12 6.5% 15.1%;
+  /* SecondarySystemBackground: #1C1C1E */
+  --secondary: 240 10% 11%;
+  --secondary-foreground: 0 0% 100%;
 
-  --popover: 20 14.3% 4.1%;
-  --popover-foreground: 60 9.1% 97.8%;
-  --popover-border: 12 6.5% 15.1%;
+  --muted: 240 10% 11%;
+  --muted-foreground: 0 0% 65%;
 
-  --secondary: 12 6.5% 15.1%;
-  --secondary-foreground: 60 9.1% 97.8%;
-  --secondary-border: 12 6.5% 15.1%;
-
-  --muted: 12 6.5% 15.1%;
-  --muted-foreground: 24 5.4% 63.9%;
-  --muted-border: 12 6.5% 15.1%;
-
-  --accent: 12 6.5% 15.1%;
-  --accent-foreground: 60 9.1% 97.8%;
-  --accent-border: 12 6.5% 15.1%;
+  --accent: 95 38% 62%;
+  --accent-foreground: 0 0% 0%;
 
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 60 9.1% 97.8%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 95 38% 62%;
+
+  --card: 0 0% 0%;
+  --card-foreground: 0 0% 100%;
+  --card-border: 0 0% 15%;
+
+  --popover: 0 0% 0%;
+  --popover-foreground: 0 0% 100%;
+  --popover-border: 0 0% 15%;
+
+  --primary-border: 95 38% 62%;
+  --secondary-border: 240 10% 11%;
+  --muted-border: 240 10% 11%;
+  --accent-border: 95 38% 62%;
   --destructive-border: 0 62.8% 30.6%;
 
-  --border: 12 6.5% 15.1%;
-  --input: 12 6.5% 15.1%;
-  --ring: 24 5.7% 82.9%;
-
-  --sidebar: 20 14.3% 4.1%;
-  --sidebar-foreground: 60 9.1% 97.8%;
-  --sidebar-border: 12 6.5% 15.1%;
-  --sidebar-ring: 24 5.7% 82.9%;
+  --sidebar: 0 0% 0%;
+  --sidebar-foreground: 0 0% 100%;
+  --sidebar-border: 0 0% 15%;
+  --sidebar-ring: 95 38% 62%;
   --sidebar-primary: 95 38% 62%;
-  --sidebar-primary-foreground: 24 9.8% 10%;
+  --sidebar-primary-foreground: 0 0% 0%;
   --sidebar-primary-border: 95 38% 62%;
-  --sidebar-accent: 12 6.5% 15.1%;
-  --sidebar-accent-foreground: 60 9.1% 97.8%;
-  --sidebar-accent-border: 12 6.5% 15.1%;
+  --sidebar-accent: 95 38% 62%;
+  --sidebar-accent-foreground: 0 0% 0%;
+  --sidebar-accent-border: 95 38% 62%;
 
-  /* Charts adjusted for dark mode contrast */
   --chart-1: 95 38% 62%;
-  --chart-2: 20 14.3% 4.1%;
+  --chart-2: 0 0% 0%;
   --chart-3: 30 80% 55%;
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
@@ -158,7 +156,9 @@ html, body {
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20;
     font-family: 'Inter', sans-serif;
+    font-weight: 400; /* font-normal */
     scroll-behavior: smooth;
+    touch-action: pan-y;
   }
 
   h1,
@@ -167,8 +167,42 @@ html, body {
   h4,
   h5,
   h6 {
-    font-family: 'Libre Baskerville', serif;
-    @apply font-normal tracking-tight text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600; /* font-semibold */
+    @apply text-balance text-foreground;
+  }
+
+  h1 {
+    font-size: 34px;
+    line-height: 41px;
+    letter-spacing: -0.03em;
+  }
+
+  h2 {
+    font-size: 28px;
+    line-height: 34px;
+    letter-spacing: -0.02em;
+  }
+
+  h3 {
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: -0.01em;
+  }
+
+  h4 {
+    font-size: 20px;
+    line-height: 25px;
+  }
+
+  h5 {
+    font-size: 17px;
+    line-height: 22px;
+  }
+
+  h6 {
+    font-size: 15px;
+    line-height: 20px;
   }
 
   /* Focus styles for better accessibility */
@@ -217,7 +251,7 @@ html, body {
   }
 
   .glass-panel {
-    @apply bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg shadow-black/5;
+    @apply bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-black/5 dark:border-white/10 shadow-lg shadow-black/5;
   }
 
   /* Custom Scrollbar */
