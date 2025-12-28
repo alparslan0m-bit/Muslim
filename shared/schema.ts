@@ -4,7 +4,6 @@ import { z } from "zod";
 
 export const sessions = pgTable("sessions", {
   id: serial("id").primaryKey(),
-  niyyah: text("niyyah").notNull(),
   startTime: timestamp("start_time").notNull(),
   endTime: timestamp("end_time"),
   durationSeconds: integer("duration_seconds").notNull(),

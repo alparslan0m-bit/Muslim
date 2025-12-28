@@ -27,7 +27,6 @@ export class LocalStorage {
       const now = new Date();
       const session: Session = {
         id: newId,
-        niyyah: input.niyyah,
         startTime: input.startTime instanceof Date ? input.startTime : new Date(input.startTime),
         endTime: input.endTime instanceof Date ? input.endTime : (input.endTime ? new Date(input.endTime) : null),
         durationSeconds: input.durationSeconds,

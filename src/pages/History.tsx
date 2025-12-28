@@ -214,15 +214,15 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                                 <Clock className="w-4 h-4" />
                               </div>
                               <div>
-                                <p className="font-medium text-foreground leading-none mb-1.5">{session.niyyah}</p>
+                                <p className="font-medium text-foreground leading-none mb-1.5">{formatDuration(session.durationSeconds)}</p>
                                 <p className="text-xs text-muted-foreground font-mono opacity-80">
                                   {format(new Date(session.startTime), "h:mm a")}
                                 </p>
                               </div>
                             </div>
                             <div className="flex flex-col items-end">
-                              <span className="text-lg font-serif text-foreground font-medium">
-                                {formatDuration(session.durationSeconds)}
+                              <span className="text-sm text-muted-foreground">
+                                {format(new Date(session.startTime), "MMM d")}
                               </span>
                             </div>
                           </div>
