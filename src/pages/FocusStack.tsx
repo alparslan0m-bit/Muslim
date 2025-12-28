@@ -15,22 +15,51 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
+  const [accumulatedTime, setAccumulatedTime] = useState(0);
+  const [lastResumeTime, setLastResumeTime] = useState<Date | null>(null);
 
   const { mutate: saveSession, isPending } = useCreateSession();
 
   const resetSession = () => {
     setSeconds(0);
+    setAccumulatedTime(0);
+    setLastResumeTime(null);
     setStartTime(new Date());
     setIsActive(false);
+  };
+
+  const handleTogglePause = () => {
+    if (isActive) {
+      // Pausing
+      if (lastResumeTime) {
+        const now = new Date();
+        const elapsed = Math.floor((now.getTime() - lastResumeTime.getTime()) / 1000);
+        setAccumulatedTime(prev => prev + elapsed);
+      }
+      setLastResumeTime(null);
+      setIsActive(false);
+    } else {
+      // Resuming
+      setLastResumeTime(new Date());
+      setIsActive(true);
+    }
   };
 
   const handleFinish = async () => {
     setIsActive(false);
 
+    // Calculate final accurate seconds
+    let finalSeconds = accumulatedTime;
+    if (lastResumeTime) {
+      const now = new Date();
+      const elapsed = Math.floor((now.getTime() - lastResumeTime.getTime()) / 1000);
+      finalSeconds = accumulatedTime + elapsed;
+    }
+
     saveSession({
       startTime: startTime,
       endTime: new Date(),
-      durationSeconds: seconds,
+      durationSeconds: finalSeconds,
       date: format(new Date(), 'yyyy-MM-dd'),
     }, {
       onSuccess: () => {
@@ -46,14 +75,20 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
 
   // Timer effect
   useEffect(() => {
-    if (!isActive || !isVisible) return;
+    if (!isActive || !lastResumeTime) return;
 
-    const interval = setInterval(() => {
-      setSeconds((s) => s + 1);
-    }, 1000);
+    const calculate = () => {
+      const now = new Date();
+      const elapsedSinceResume = Math.floor((now.getTime() - lastResumeTime.getTime()) / 1000);
+      setSeconds(accumulatedTime + elapsedSinceResume);
+    };
 
+    // Calculate immediately when this effect runs (e.g., when returning to app)
+    calculate();
+
+    const interval = setInterval(calculate, 1000);
     return () => clearInterval(interval);
-  }, [isActive, isVisible]);
+  }, [isActive, lastResumeTime, accumulatedTime, isVisible]);
 
   const formatTime = (totalSeconds: number) => {
     const hrs = Math.floor(totalSeconds / 3600);
@@ -156,8 +191,11 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
               size="lg"
               className="w-full h-24 rounded-2xl flex flex-col justify-center items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
               onClick={() => {
-                setIsActive(true);
+                setAccumulatedTime(0);
+                setLastResumeTime(new Date());
                 setStartTime(new Date());
+                setIsActive(true);
+                setSeconds(0);
               }}
             >
               <Play className="w-8 h-8" />
@@ -183,7 +221,7 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
               variant="secondary"
               size="lg"
               className="w-full h-20 rounded-2xl flex flex-col gap-2 shadow-lg hover:shadow-xl transition-all duration-300 focus:ring-2 focus:ring-secondary/50 focus:ring-offset-2"
-              onClick={() => setIsActive(!isActive)}
+              onClick={handleTogglePause}
               disabled={isPending}
             >
               <motion.div
