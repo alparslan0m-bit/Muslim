@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { usePrayerTimes } from "@/hooks/use-prayer-times";
 import { Button } from "@/components/Button";
 import { PageLayout } from "@/components/PageLayout";
+import { Card } from "@/components/ui/card";
 import { Loader2, ArrowRight, Sun, Moon, CloudSun, RefreshCw, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -172,8 +173,8 @@ export default function Home({ onNavigate }: HomeProps) {
           animate={{ scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
         >
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-white/20 rounded-full blur-xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-white/20 rounded-full blur-xl" />
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-white/20 rounded-full blur-xl animate-float" />
+          <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-white/20 rounded-full blur-xl animate-float" />
         </motion.div>
 
         <motion.div
@@ -210,23 +211,23 @@ export default function Home({ onNavigate }: HomeProps) {
       <div className="space-y-6">
         {/* Next Prayer Card */}
         <motion.div
-          className="bg-background rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-border"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.2 }}
         >
+          <Card className="p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)]">
           <div className="text-center space-y-2 mb-6">
             <span className="text-sm uppercase tracking-widest text-muted-foreground font-medium">
               Next Prayer
             </span>
-            <h2 className="text-2xl font-semibold text-foreground">
+            <h2 className="text-2xl font-semibold text-gradient-gold">
               {prayerInfo ? prayerInfo.nextPrayerName : "Loading..."}
             </h2>
           </div>
 
           {/* Timer Display */}
           <motion.div
-            className="relative w-48 h-48 mx-auto flex items-center justify-center mb-6"
+            className="relative w-48 h-48 mx-auto flex items-center justify-center mb-6 gpu-accelerated"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 100 }}
@@ -248,16 +249,19 @@ export default function Home({ onNavigate }: HomeProps) {
               </p>
             </div>
           </motion.div>
+        </Card>
+      </motion.div>
 
-          {/* Action Button */}
-          <motion.div
-            whileHover={prayerInfo ? { scale: 1.02 } : {}}
-            whileTap={prayerInfo ? { scale: 0.98 } : {}}
-          >
+      {/* Action Button */}
+      <motion.div
+        whileHover={prayerInfo ? { scale: 1.02 } : {}}
+        whileTap={prayerInfo ? { scale: 0.98 } : {}}
+      >
             <Button
               onClick={() => onNavigate('focus')} // ✅ Uses the prop
+              variant="accent"
               size="lg"
-              className="w-full h-12 rounded-xl shadow-sm active:scale-95 active:opacity-80"
+              className="w-full h-12 rounded-xl shadow-sm active:scale-95 active:opacity-80 animate-glow"
               disabled={!prayerInfo || loading}
               aria-label="Start a new focus session with intention"
             >
@@ -273,13 +277,12 @@ export default function Home({ onNavigate }: HomeProps) {
                 </>
               )}
             </Button>
-          </motion.div>
         </motion.div>
 
         {/* Fallback Location Indicator */}
         {isUsingFallback && (
           <motion.div
-            className="bg-background rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-border"
+            className="glass-panel p-4 rounded-xl"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}

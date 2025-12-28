@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { Clock, ArrowLeft, RefreshCw, Trophy, Flame, Calendar as CalendarIcon, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -95,7 +96,7 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
         {/* Header */}
         <header className="flex items-center justify-between mb-10 pt-4 sticky top-0 z-10 py-4 bg-background/80 backdrop-blur-xl -mx-6 px-6 border-b border-border/40 supports-[backdrop-filter]:bg-background/60">
           <div>
-            <h1 className="text-3xl font-serif text-foreground tracking-tight">My Journey</h1>
+            <h1 className="large-title text-foreground tracking-tight">My Journey</h1>
             <p className="text-muted-foreground text-sm font-medium tracking-wide opacity-80 mt-1">Track your spiritual growth</p>
           </div>
           <div className="flex items-center gap-2">
@@ -125,8 +126,8 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="col-span-1 bg-gradient-to-br from-white to-stone-50 dark:from-stone-900 dark:to-stone-950 p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 dark:border-white/5 relative overflow-hidden group"
           >
+            <Card className="bg-gradient-to-br from-white to-stone-50 dark:from-stone-900 dark:to-stone-950 p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 dark:border-white/5 relative overflow-hidden group">
             <div className="absolute top-4 right-4 p-2 bg-primary/10 rounded-full text-primary">
               <Trophy className="w-5 h-5" />
             </div>
@@ -144,14 +145,15 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
 
             {/* Background decoration */}
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors duration-500" />
-          </motion.div>
+          </Card>
+        </motion.div>
 
-          <motion.div
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="col-span-1 bg-gradient-to-br from-white to-stone-50 dark:from-stone-900 dark:to-stone-950 p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 dark:border-white/5 relative overflow-hidden group"
           >
+            <Card className="bg-gradient-to-br from-white to-stone-50 dark:from-stone-900 dark:to-stone-950 p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 dark:border-white/5 relative overflow-hidden group">
             <div className="absolute top-4 right-4 p-2 bg-orange-500/10 rounded-full text-orange-600 dark:text-orange-400">
               <Flame className="w-5 h-5" />
             </div>
@@ -162,10 +164,11 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
               <p className="text-muted-foreground/80 text-xs font-medium mt-2">Total Sessions</p>
             </div>
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl group-hover:bg-orange-500/10 transition-colors duration-500" />
-          </motion.div>
-        </div>
+          </Card>
+        </motion.div>
+      </div>
 
-        {/* Timeline List */}
+      {/* Timeline List */}
         <div className="relative">
           {/* Vertical Line for Timeline Effect (Optional, kept minimal) */}
           <div className="absolute left-[19px] top-4 bottom-0 w-px bg-gradient-to-b from-border/80 via-border/40 to-transparent" />
@@ -227,7 +230,7 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                   <motion.div
                     className="space-y-3 pl-10"
                     variants={{
-                      hidden: { opacity: 1 },
+                      hidden: { opacity: 0 },
                       visible: { 
                         opacity: 1,
                         transition: { staggerChildren: 0.05, delayChildren: 0.1 } 
@@ -246,13 +249,15 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                             visible: { opacity: 1, y: 0 }
                           }}
                           transition={{ duration: 0.3 }}
-                          className={cn(
-                            "group relative bg-white dark:bg-stone-900",
-                            "p-4 rounded-2xl border border-border/40 hover:border-primary/30",
-                            "shadow-sm hover:shadow-md transition-all duration-300 ease-out",
-                            "cursor-default overflow-hidden"
-                          )}
                         >
+                          <Card
+                            className={cn(
+                              "group relative bg-white dark:bg-stone-900",
+                              "p-4 rounded-2xl border border-border/40 hover:border-primary/30",
+                              "shadow-sm hover:shadow-md transition-all duration-300 ease-out",
+                              "cursor-default overflow-hidden"
+                            )}
+                          >
                           <div className="flex justify-between items-center relative z-10">
                             <div className="flex items-center gap-4">
                               <div className="w-10 h-10 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-stone-500 group-hover:text-primary group-hover:bg-primary/10 transition-colors">
@@ -273,7 +278,8 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                           </div>
                           {/* Hover Effect */}
                           <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                        </motion.div>
+                        </Card>
+                      </motion.div>
                       ))}
                   </motion.div>
                 </motion.div>

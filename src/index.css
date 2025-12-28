@@ -58,6 +58,7 @@ html, body {
   --card: 0 0% 100%;
   --card-foreground: 0 0% 9%;
   --card-border: 0 0% 90%;
+  --card-elevated: 0 0% 95%; /* Slightly darker than pure white for light mode */
 
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 9%;
@@ -315,6 +316,24 @@ html, body {
     transform: translateZ(0);
     will-change: transform;
     backface-visibility: hidden;
+  }
+
+  /* Button elevation states */
+  .hover-elevate {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-elevate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .active-elevate-2 {
+    transition: transform 0.1s ease;
+  }
+
+  .active-elevate-2:active {
+    transform: translateY(1px);
   }
 }
 

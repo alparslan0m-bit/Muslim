@@ -45,7 +45,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute w-14 h-14 bg-primary/10 rounded-full shadow-[0_0_12px_rgba(157,193,131,0.3)]"
+                  className="absolute w-14 h-14 bg-primary/10 rounded-full shadow-[0_0_12px_rgba(157,193,131,0.3)] z-20"
                   initial={false}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
