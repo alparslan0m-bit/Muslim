@@ -12,7 +12,6 @@ interface HomeProps {
 
 export default function Home({ onNavigate }: HomeProps) {
   const { prayerInfo, loading, error, isUsingFallback } = usePrayerTimes();
-  const [, setLocation] = useLocation();
   const [timeLeft, setTimeLeft] = useState<string>("--:--:--");
 
   // Format time remaining until next prayer - memoized to prevent recreation

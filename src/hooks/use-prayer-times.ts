@@ -18,7 +18,6 @@ interface CachedPrayerInfo extends PrayerInfo {
 const prayerCache = new Map<string, CachedPrayerInfo>();
 
 // Cache validity duration: 5 minutes
-// Prayer times need frequent recalculation to keep "current prayer" accurate
 const CACHE_DURATION_MS = 5 * 60 * 1000;
 
 // Default location (Mecca) - can be overridden
@@ -52,13 +51,13 @@ export function usePrayerTimes() {
   const [coords, setCoords] = useState<Coordinates | null>(null);
   const [prayerInfo, setPrayerInfo] = useState<PrayerInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start loading immediately
   const [isUsingFallback, setIsUsingFallback] = useState(false);
 
-  // 1. Get Location with shorter timeout and non-blocking
+  // 1. Get Location
   useEffect(() => {
     if (!navigator.geolocation) {
-      setError("Geolocation is not supported by your browser");
+      // If no geo support, fallback immediately
       const fallbackLocation = getDefaultLocation();
       setCoords(fallbackLocation.coords);
       setIsUsingFallback(true);
@@ -66,13 +65,15 @@ export function usePrayerTimes() {
     }
 
     let timeoutId: NodeJS.Timeout;
+
     const handleSuccess = (position: GeolocationPosition) => {
       clearTimeout(timeoutId);
       const newCoords = new Coordinates(position.coords.latitude, position.coords.longitude);
       setCoords(newCoords);
       setError(null);
       setIsUsingFallback(false);
-      setLoading(false);
+      // NOTE: We do NOT set loading to false here yet. 
+      // We wait until prayer times are calculated in the next effect.
       
       // Save user's location preference
       try {
@@ -88,24 +89,22 @@ export function usePrayerTimes() {
 
     const handleError = (err: GeolocationPositionError) => {
       clearTimeout(timeoutId);
+      console.warn('Geolocation error, using fallback:', err);
       // Use fallback location instead of showing error
       const fallbackLocation = getDefaultLocation();
       setCoords(fallbackLocation.coords);
       setIsUsingFallback(true);
-      setError(null); // Don't show error - we have a fallback
-      setLoading(false);
-      console.error('Geolocation error:', err);
+      setError(null);
+      // Keep loading true until calculation finishes
     };
 
     // Start loading and request location
-    setLoading(true);
     timeoutId = setTimeout(() => {
       // Timeout: use fallback location gracefully
       const fallbackLocation = getDefaultLocation();
       setCoords(fallbackLocation.coords);
       setIsUsingFallback(true);
-      setError(null); // Don't show error - fallback is working
-      setLoading(false);
+      setError(null);
     }, 5000);
 
     navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
@@ -119,72 +118,82 @@ export function usePrayerTimes() {
 
   // 2. Calculate Times with caching
   useEffect(() => {
-    if (!coords) return;
+    if (!coords) return; 
 
-    const today = new Date().toDateString();
+    const date = new Date();
+    const today = date.toDateString();
     const cacheKey = `${coords.latitude},${coords.longitude},${today}`;
     const cached = prayerCache.get(cacheKey);
     
-    // Check if cache is still valid (less than 5 minutes old)
-    // This keeps "current prayer" info fresh while avoiding excessive recalculation
+    // Check if cache is still valid
     if (cached) {
       const cacheAge = Date.now() - cached.cachedAt;
       if (cacheAge < CACHE_DURATION_MS) {
         setPrayerInfo(cached);
+        setLoading(false); // Data is ready
         return;
       }
     }
 
     const calculate = () => {
-      const date = new Date();
-      const params = CalculationMethod.MuslimWorldLeague();
-      const prayerTimes = new PrayerTimes(coords, date, params);
+      try {
+        const params = CalculationMethod.MuslimWorldLeague();
+        const prayerTimes = new PrayerTimes(coords, new Date(), params);
 
-      const next = prayerTimes.nextPrayer();
-      const current = prayerTimes.currentPrayer();
-      
-      let nextPrayerTime = prayerTimes.timeForPrayer(next);
-      let nextPrayerName = prayerNameToString(next);
-      
-      // If next is None, it means we passed Isha, next is Fajr tomorrow
-      if (next === Prayer.None) {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const tomorrowPrayerTimes = new PrayerTimes(coords, tomorrow, params);
-        nextPrayerTime = tomorrowPrayerTimes.fajr;
-        nextPrayerName = "Fajr";
-      }
-
-      // "Time for Salah" logic: if current time is within 15 mins after a prayer start
-      const now = new Date();
-      let isPrayerTimeNow = false;
-      
-      if (current !== Prayer.None) {
-        const currentPrayerTime = prayerTimes.timeForPrayer(current);
-        const diffMinutes = (now.getTime() - currentPrayerTime.getTime()) / 1000 / 60;
-        if (diffMinutes >= 0 && diffMinutes < 20) {
-          isPrayerTimeNow = true;
+        const next = prayerTimes.nextPrayer();
+        const current = prayerTimes.currentPrayer();
+        
+        let nextPrayerTime = prayerTimes.timeForPrayer(next);
+        let nextPrayerName = prayerNameToString(next);
+        
+        // If next is None, it means we passed Isha, next is Fajr tomorrow
+        if (next === Prayer.None) {
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          const tomorrowPrayerTimes = new PrayerTimes(coords, tomorrow, params);
+          nextPrayerTime = tomorrowPrayerTimes.fajr;
+          nextPrayerName = "Fajr";
         }
+
+        // "Time for Salah" logic: if current time is within 15 mins after a prayer start
+        const now = new Date();
+        let isPrayerTimeNow = false;
+        
+        if (current !== Prayer.None) {
+          const currentPrayerTime = prayerTimes.timeForPrayer(current);
+          if (currentPrayerTime) {
+             const diffMinutes = (now.getTime() - currentPrayerTime.getTime()) / 1000 / 60;
+             if (diffMinutes >= 0 && diffMinutes < 20) {
+               isPrayerTimeNow = true;
+             }
+          }
+        }
+
+        const newPrayerInfo: CachedPrayerInfo = {
+          name: current === Prayer.None ? 'Isha' : prayerNameToString(current),
+          time: now,
+          nextPrayerName,
+          nextPrayerTime: nextPrayerTime || new Date(), // Fallback safety
+          isPrayerTimeNow,
+          cachedAt: Date.now()
+        };
+
+        // Cache the result
+        prayerCache.set(cacheKey, newPrayerInfo);
+        setPrayerInfo(newPrayerInfo);
+        setError(null);
+      } catch (err) {
+        console.error("Error calculating prayer times:", err);
+        setError("Failed to calculate prayer times");
+      } finally {
+        setLoading(false); // Calculation done (success or fail)
       }
-
-      const newPrayerInfo: CachedPrayerInfo = {
-        name: current === Prayer.None ? 'Isha' : prayerNameToString(current),
-        time: now,
-        nextPrayerName,
-        nextPrayerTime: nextPrayerTime!,
-        isPrayerTimeNow,
-        cachedAt: Date.now() // Store when this was calculated
-      };
-
-      // Cache the result
-      prayerCache.set(cacheKey, newPrayerInfo);
-      setPrayerInfo(newPrayerInfo);
     };
 
     calculate();
-    // Recalculate every 5 minutes to keep "current prayer" accurate
-    // even if coordinates don't change
-    const interval = setInterval(calculate, CACHE_DURATION_MS);
+
+    // Recalculate every minute (not 5 mins) for accurate "Time Left" and "Current Prayer" states
+    const interval = setInterval(calculate, 60000);
     return () => clearInterval(interval);
 
   }, [coords]);
