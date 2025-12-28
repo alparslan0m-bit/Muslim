@@ -1,27 +1,11 @@
-import { pgTable, text, serial, integer, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
+export interface Session {
+  id: number;
+  startTime: Date | string;
+  endTime?: Date | string | null;
+  durationSeconds: number;
+  date: string; // YYYY-MM-DD
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
 
-export const sessions = pgTable("sessions", {
-  id: serial("id").primaryKey(),
-  startTime: timestamp("start_time").notNull(),
-  endTime: timestamp("end_time"),
-  durationSeconds: integer("duration_seconds").notNull(),
-  date: text("date").notNull(), // ISO date string YYYY-MM-DD
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const insertSessionSchema = createInsertSchema(sessions)
-  .omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  })
-  .extend({
-    startTime: z.union([z.date(), z.string().pipe(z.coerce.date())]),
-    endTime: z.union([z.date(), z.string().pipe(z.coerce.date())]).nullable().optional(),
-  });
-
-export type Session = typeof sessions.$inferSelect;
-export type InsertSession = z.infer<typeof insertSessionSchema>;
+export type InsertSession = Omit<Session, 'id' | 'createdAt' | 'updatedAt'>;

@@ -292,22 +292,6 @@ export default function Home({ onNavigate }: HomeProps) {
             </div>
           </motion.div>
         )}
-
-        {/* Quick Actions Group */}
-        <div className="bg-secondary rounded-xl mx-0">
-          <div className="bg-background rounded-xl mx-4 mb-4 p-4 shadow-sm">
-            <h3 className="text-lg font-semibold mb-3">Quick Actions</h3>
-            <div className="space-y-2">
-              <button 
-                onClick={() => onNavigate('history')} 
-                className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 active:bg-muted transition-colors"
-              >
-                <span className="text-foreground">View History</span>
-                <ArrowRight className="w-4 h-4 text-muted-foreground" />
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </PageLayout>
   );
