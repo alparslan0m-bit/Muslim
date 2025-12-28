@@ -12,6 +12,7 @@ export function useSessions() {
       const sessions = LocalStorage.getSessions();
       return sessions;
     },
+    networkMode: 'always',
     retry: false,
   });
 }
@@ -22,6 +23,7 @@ export function useClearSessions() {
     mutationFn: async () => {
       LocalStorage.clearAllSessions();
     },
+    networkMode: 'always',
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: SESSIONS_QUERY_KEY });
     },
@@ -36,6 +38,7 @@ export function useCreateSession() {
       const savedSession = LocalStorage.createSession(session);
       return savedSession;
     },
+    networkMode: 'always',
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: SESSIONS_QUERY_KEY });
     },
