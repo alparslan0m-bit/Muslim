@@ -13,7 +13,7 @@ interface FocusStackProps {
 
 export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps) {
   const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
 
   const { mutate: saveSession, isPending } = useCreateSession();
@@ -21,7 +21,7 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
   const resetSession = () => {
     setSeconds(0);
     setStartTime(new Date());
-    setIsActive(true);
+    setIsActive(false);
   };
 
   const handleFinish = async () => {
@@ -68,7 +68,7 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
 
   return (
     <motion.div 
-      className="min-h-screen bg-background flex flex-col items-center justify-between p-8 relative overflow-hidden"
+      className="min-h-screen bg-background flex flex-col items-center justify-between p-6 pt-12 pb-32 relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -139,53 +139,84 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
       </motion.div>
 
       {/* Controls */}
-      <motion.div 
-        className="z-10 w-full max-w-sm grid grid-cols-2 gap-4 mb-8"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.6 }}
-      >
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+      {!isActive && seconds === 0 ? (
+        <motion.div 
+          className="z-10 w-full max-w-sm"
+          layout
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
         >
-          <Button
-            variant="secondary"
-            size="lg"
-            className="w-full h-20 rounded-2xl flex flex-col gap-2 shadow-lg hover:shadow-xl transition-all duration-300 focus:ring-2 focus:ring-secondary/50 focus:ring-offset-2"
-            onClick={() => setIsActive(!isActive)}
-            disabled={isPending}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <motion.div
-              animate={isActive ? { rotate: 0 } : { rotate: 180 }}
-              transition={{ duration: 0.3 }}
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full h-24 rounded-2xl flex flex-col justify-center items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+              onClick={() => {
+                setIsActive(true);
+                setStartTime(new Date());
+              }}
             >
-              {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-            </motion.div>
-            <span className="text-xs font-normal uppercase tracking-wider">
-              {isActive ? "Pause" : "Resume"}
-            </span>
-          </Button>
+              <Play className="w-8 h-8" />
+              <span className="text-sm font-normal uppercase tracking-wider">
+                Start Focus
+              </span>
+            </Button>
+          </motion.div>
         </motion.div>
-
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+      ) : (
+        <motion.div 
+          className="z-10 w-full max-w-sm grid grid-cols-2 gap-4 mb-8"
+          layout
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
         >
-          <Button
-            variant="primary"
-            size="lg"
-            className="w-full h-20 rounded-2xl flex flex-col gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
-            onClick={handleFinish}
-            disabled={isPending || seconds === 0}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <StopCircle className="w-6 h-6" />
-            <span className="text-xs font-normal uppercase tracking-wider">
-              {isPending ? "Saving..." : "Finish"}
-            </span>
-          </Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="w-full h-20 rounded-2xl flex flex-col gap-2 shadow-lg hover:shadow-xl transition-all duration-300 focus:ring-2 focus:ring-secondary/50 focus:ring-offset-2"
+              onClick={() => setIsActive(!isActive)}
+              disabled={isPending}
+            >
+              <motion.div
+                animate={isActive ? { rotate: 0 } : { rotate: 180 }}
+                transition={{ duration: 0.3 }}
+              >
+                {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+              </motion.div>
+              <span className="text-xs font-normal uppercase tracking-wider">
+                {isActive ? "Pause" : "Resume"}
+              </span>
+            </Button>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full h-20 rounded-2xl flex flex-col gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+              onClick={handleFinish}
+              disabled={isPending || seconds === 0}
+            >
+              <StopCircle className="w-6 h-6" />
+              <span className="text-xs font-normal uppercase tracking-wider">
+                {isPending ? "Saving..." : "Finish"}
+              </span>
+            </Button>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </motion.div>
   );
 }

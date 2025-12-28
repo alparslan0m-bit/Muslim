@@ -1,6 +1,6 @@
-import { useSessions } from "@/hooks/use-sessions";
+import { useSessions, useClearSessions } from "@/hooks/use-sessions";
 import { format } from "date-fns";
-import { Clock, ArrowLeft, RefreshCw, Trophy, Flame, Calendar as CalendarIcon, Sparkles } from "lucide-react";
+import { Clock, ArrowLeft, RefreshCw, Trophy, Flame, Calendar as CalendarIcon, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +13,7 @@ interface HistoryProps {
 
 export default function History({ onBackToHome, onTabChange }: HistoryProps) {
   const { data: sessions, isLoading, error, refetch } = useSessions();
+  const { mutate: clearSessions, isPending: isClearing } = useClearSessions();
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -97,11 +98,25 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
             <h1 className="text-3xl font-serif text-foreground tracking-tight">My Journey</h1>
             <p className="text-muted-foreground text-sm font-medium tracking-wide opacity-80 mt-1">Track your spiritual growth</p>
           </div>
-          <button onClick={onBackToHome}>
-            <Button variant="ghost" size="icon" className="group rounded-full w-12 h-12 hover:bg-muted/60">
-              <ArrowLeft className="w-6 h-6 text-foreground/80 group-hover:-translate-x-1 transition-transform duration-300" />
-            </Button>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (window.confirm('Are you sure you want to delete all history? This cannot be undone.')) {
+                  clearSessions();
+                }
+              }}
+              disabled={isClearing}
+            >
+              <Button variant="ghost" size="icon" className="group rounded-full w-12 h-12 hover:bg-destructive/10 text-destructive hover:text-destructive">
+                <Trash2 className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+              </Button>
+            </button>
+            <button onClick={onBackToHome}>
+              <Button variant="ghost" size="icon" className="group rounded-full w-12 h-12 hover:bg-muted/60">
+                <ArrowLeft className="w-6 h-6 text-foreground/80 group-hover:-translate-x-1 transition-transform duration-300" />
+              </Button>
+            </button>
+          </div>
         </header>
 
         {/* Stats Grid using Bento-box style */}

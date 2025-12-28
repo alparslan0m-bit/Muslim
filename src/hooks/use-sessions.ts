@@ -16,6 +16,18 @@ export function useSessions() {
   });
 }
 
+export function useClearSessions() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      LocalStorage.clearAllSessions();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: SESSIONS_QUERY_KEY });
+    },
+  });
+}
+
 export function useCreateSession() {
   const queryClient = useQueryClient();
   return useMutation({
