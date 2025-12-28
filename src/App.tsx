@@ -35,7 +35,7 @@ function AppContent() {
       </View>
 
       <View isActive={activeTab === 'focus'}>
-        <FocusStack onBackToHome={handleBackToHome} />
+        <FocusStack onBackToHome={handleBackToHome} isVisible={activeTab === 'focus'} />
       </View>
 
       <View isActive={activeTab === 'history'}>

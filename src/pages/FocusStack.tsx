@@ -8,14 +8,21 @@ import { format } from "date-fns";
 
 interface FocusStackProps {
   onBackToHome: () => void;
+  isVisible: boolean;
 }
 
-export default function FocusStack({ onBackToHome }: FocusStackProps) {
+export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps) {
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(true);
-  const [startTime] = useState(new Date());
+  const [startTime, setStartTime] = useState(new Date());
 
   const { mutate: saveSession, isPending } = useCreateSession();
+
+  const resetSession = () => {
+    setSeconds(0);
+    setStartTime(new Date());
+    setIsActive(true);
+  };
 
   const handleFinish = async () => {
     setIsActive(false);
@@ -27,6 +34,7 @@ export default function FocusStack({ onBackToHome }: FocusStackProps) {
       date: format(new Date(), 'yyyy-MM-dd'),
     }, {
       onSuccess: () => {
+        resetSession();
         onBackToHome(); // Go back to home after saving
       },
       onError: (error) => {
@@ -38,14 +46,14 @@ export default function FocusStack({ onBackToHome }: FocusStackProps) {
 
   // Timer effect
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive || !isVisible) return;
 
     const interval = setInterval(() => {
       setSeconds((s) => s + 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isActive]);
+  }, [isActive, isVisible]);
 
   const formatTime = (totalSeconds: number) => {
     const hrs = Math.floor(totalSeconds / 3600);
@@ -94,6 +102,7 @@ export default function FocusStack({ onBackToHome }: FocusStackProps) {
                 'You have an active session. Are you sure you want to leave? Your progress will not be saved.'
               );
               if (!confirmed) return;
+              resetSession();
             }
             onBackToHome();
           }}
