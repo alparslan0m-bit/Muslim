@@ -118,6 +118,7 @@ html, body {
 
   --card: 0 0% 0%;
   --card-foreground: 0 0% 100%;
+  --card-elevated: 0 0% 10%; /* Slightly lighter than pure black */
   --card-border: 0 0% 15%;
 
   --popover: 0 0% 0%;
@@ -155,7 +156,7 @@ html, body {
 
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20;
-    font-family: 'Inter', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
     font-weight: 400; /* font-normal */
     scroll-behavior: smooth;
     touch-action: pan-y;
@@ -168,7 +169,7 @@ html, body {
   h4,
   h5,
   h6 {
-    font-family: 'Inter', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
     font-weight: 600; /* font-semibold */
     @apply text-balance text-foreground;
   }
@@ -204,6 +205,14 @@ html, body {
   h6 {
     font-size: 15px;
     line-height: 20px;
+  }
+
+  /* Apple Large Title style */
+  .large-title {
+    font-size: 34px;
+    line-height: 41px;
+    font-weight: 700;
+    letter-spacing: 0.37px;
   }
 
   /* Focus styles for better accessibility */

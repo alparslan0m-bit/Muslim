@@ -75,8 +75,13 @@ export function PWASplashScreen() {
 
             {/* Glow effect */}
             <motion.div
-              animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.5, 0.8, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              animate={{ scale: [0.8, 1.4, 0.8], opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="absolute inset-0 bg-primary/30 rounded-full blur-3xl -z-10"
+            />
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
               className="absolute inset-0 bg-primary/20 rounded-full blur-2xl -z-10"
             />
           </motion.div>

@@ -177,8 +177,25 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
               transition={{ delay: 0.3 }}
               className="text-center py-16 px-6 bg-white/40 dark:bg-black/20 backdrop-blur-md rounded-[2rem] border border-dashed border-border"
             >
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary animate-pulse">
-                <Sparkles className="w-8 h-8" />
+              <div className="relative w-20 h-20 mx-auto mb-4">
+                <motion.div
+                  animate={{ rotate: [0, 5, -5, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center border border-primary/20"
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-2xl"
+                  >
+                    🕌
+                  </motion.div>
+                </motion.div>
+                <motion.div
+                  animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute inset-0 bg-primary/10 rounded-full blur-xl"
+                />
               </div>
               <h3 className="text-lg font-serif text-foreground mb-2">Begin Your Journey</h3>
               <p className="text-muted-foreground text-sm mb-6 max-w-[240px] mx-auto text-balance">
@@ -207,15 +224,24 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                     </h3>
                   </div>
 
-                  <div className="space-y-3 pl-10">
+                  <motion.div
+                    className="space-y-3 pl-10"
+                    variants={{
+                      visible: { transition: { staggerChildren: 0.05 } }
+                    }}
+                    initial="hidden"
+                    animate="visible"
+                  >
                     {groupedSessions?.[date]
                       .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
                       .map((session, index) => (
                         <motion.div
                           key={session.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.35 + index * 0.05 }}
+                          variants={{
+                            hidden: { opacity: 0, y: 10 },
+                            visible: { opacity: 1, y: 0 }
+                          }}
+                          transition={{ duration: 0.3 }}
                           className={cn(
                             "group relative bg-white dark:bg-stone-900",
                             "p-4 rounded-2xl border border-border/40 hover:border-primary/30",
@@ -245,7 +271,7 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                           <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                         </motion.div>
                       ))}
-                  </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </div>

@@ -210,7 +210,7 @@ export default function Home({ onNavigate }: HomeProps) {
       <div className="space-y-6">
         {/* Next Prayer Card */}
         <motion.div
-          className="bg-background rounded-xl p-6 shadow-sm border border-border"
+          className="bg-background rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-border"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.8 }}
@@ -279,7 +279,7 @@ export default function Home({ onNavigate }: HomeProps) {
         {/* Fallback Location Indicator */}
         {isUsingFallback && (
           <motion.div
-            className="bg-background rounded-xl p-4 shadow-sm border border-border"
+            className="bg-background rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-border"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}

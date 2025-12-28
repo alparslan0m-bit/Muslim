@@ -63,8 +63,23 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
       date: format(new Date(), 'yyyy-MM-dd'),
     }, {
       onSuccess: () => {
-        resetSession();
-        onBackToHome(); // Go back to home after saving
+        // Celebration animation
+        const timerElement = document.querySelector('.timer-display');
+        if (timerElement) {
+          timerElement.animate([
+            { transform: 'scale(1)' },
+            { transform: 'scale(1.1)' },
+            { transform: 'scale(1)' }
+          ], {
+            duration: 600,
+            easing: 'ease-out'
+          });
+        }
+        // Short delay to let animation play before resetting
+        setTimeout(() => {
+          resetSession();
+          onBackToHome();
+        }, 600);
       },
       onError: (error) => {
         setIsActive(true);
@@ -115,12 +130,14 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
           "absolute inset-0 bg-primary/5 transition-opacity duration-1000",
           isActive ? "opacity-100" : "opacity-30"
         )}
-        animate={{ 
-          background: isActive 
-            ? "radial-gradient(circle at center, rgba(157, 193, 131, 0.1) 0%, transparent 70%)"
-            : "radial-gradient(circle at center, rgba(157, 193, 131, 0.05) 0%, transparent 70%)"
+        animate={{
+          background: [
+            "radial-gradient(circle at 30% 30%, rgba(157, 193, 131, 0.1) 0%, transparent 70%)",
+            "radial-gradient(circle at 70% 70%, rgba(157, 193, 131, 0.15) 0%, transparent 70%)",
+            "radial-gradient(circle at 30% 30%, rgba(157, 193, 131, 0.1) 0%, transparent 70%)"
+          ]
         }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
       
       {/* Back Button */}
@@ -150,26 +167,56 @@ export default function FocusStack({ onBackToHome, isVisible }: FocusStackProps)
 
       {/* Main Timer */}
       <motion.div 
-        className="z-10 flex flex-col items-center justify-center flex-1"
+        className="z-10 flex flex-col items-center justify-center flex-1 relative"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 100 }}
       >
-        <motion.div 
-          className="text-[5rem] md:text-[8rem] font-mono font-light text-foreground tabular-nums leading-none tracking-tight"
-          key={seconds}
-          initial={{ scale: 0.95, opacity: 0.9 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.2 }}
-        >
-          {formatTime(seconds)}
-        </motion.div>
+        {/* Circular Progress Ring */}
+        <div className="relative w-80 h-80 md:w-96 md:h-96 flex items-center justify-center">
+          <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              className="text-muted-foreground/20"
+            />
+            <motion.circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="currentColor"
+              strokeWidth="3"
+              fill="none"
+              className="text-primary"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: seconds > 0 ? Math.min(seconds / 3600, 1) : 0 }} // Example: fill based on hours, max 1 hour
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+          </svg>
+          
+          <motion.div 
+            className="timer-display text-[5rem] md:text-[8rem] font-mono font-light text-foreground tabular-nums leading-none tracking-tight"
+            key={seconds}
+            initial={{ scale: 0.95, opacity: 0.9 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {formatTime(seconds)}
+          </motion.div>
+        </div>
         <motion.p 
           className="text-muted-foreground mt-4 font-light"
           animate={{ opacity: isActive ? 1 : 0.6 }}
           transition={{ duration: 0.3 }}
         >
-          {isActive ? "Focusing..." : "Paused"}
+          <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+            {seconds === 0 && !isActive ? "Ready" : isActive ? "Focusing" : "Paused"}
+          </span>
         </motion.p>
       </motion.div>
 

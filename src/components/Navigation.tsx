@@ -29,7 +29,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="flex items-center justify-around px-4 py-2">
+      <div className="flex items-center justify-around px-4 py-2 relative">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
 
@@ -40,11 +40,19 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
                 handleNavClick();
                 onTabChange(item.id);
               }}
-              className="flex flex-col items-center justify-center flex-1 py-2"
+              className="flex flex-col items-center justify-center flex-1 py-3 min-h-[56px] relative"
             >
+              {isActive && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-primary/10 rounded-full"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
               <motion.div
                 className={cn(
-                  "flex flex-col items-center gap-1 transition-all duration-200",
+                  "flex flex-col items-center gap-1 transition-all duration-200 relative z-10",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
                 whileTap={{ scale: 0.95 }}
