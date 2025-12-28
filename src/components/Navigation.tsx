@@ -27,7 +27,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
       <div className="flex items-center justify-around px-4 py-2 relative">
         {navItems.map((item) => {
@@ -45,7 +45,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-primary/10 rounded-full"
+                  className="absolute w-14 h-14 bg-primary/10 rounded-full shadow-[0_0_12px_rgba(157,193,131,0.3)]"
                   initial={false}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />

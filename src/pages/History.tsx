@@ -214,7 +214,7 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                   key={date}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + dateIndex * 0.1, duration: 0.5 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.3 + dateIndex * 0.1 }}
                   className="relative"
                 >
                   <div className="flex items-center gap-4 mb-4">
@@ -227,7 +227,11 @@ export default function History({ onBackToHome, onTabChange }: HistoryProps) {
                   <motion.div
                     className="space-y-3 pl-10"
                     variants={{
-                      visible: { transition: { staggerChildren: 0.05 } }
+                      hidden: { opacity: 1 },
+                      visible: { 
+                        opacity: 1,
+                        transition: { staggerChildren: 0.05, delayChildren: 0.1 } 
+                      }
                     }}
                     initial="hidden"
                     animate="visible"

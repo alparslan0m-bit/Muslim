@@ -213,7 +213,7 @@ export default function Home({ onNavigate }: HomeProps) {
           className="bg-background rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-border"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.2 }}
         >
           <div className="text-center space-y-2 mb-6">
             <span className="text-sm uppercase tracking-widest text-muted-foreground font-medium">
